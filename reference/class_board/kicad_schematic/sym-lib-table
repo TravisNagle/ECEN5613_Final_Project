@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "ECEN5613")(type "KiCad")(uri "${KIPRJMOD}/ECEN5613.kicad_sym")(options "")(descr "ECEN 5613 development board symbols"))
+)

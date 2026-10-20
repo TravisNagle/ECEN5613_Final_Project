@@ -1,0 +1,200 @@
+Name       lab3;
+Partno     U7;
+Date       10/06/2026;
+Revision   1;
+Designer   Nathan Cohen;
+Company    CU Boulder ECEN 5613;
+Assembly   8051 Dev Board;
+Location   U7;
+Device     G16V8;
+
+/* ======================================================================
+   File name   : lab3.pld
+   Author      : Nathan Cohen
+   Course      : ECEN 5613 Embedded System Design, Fall 2026
+   Assignment  : Lab 3, Step 3 - 1KB+31KB XRAM decode (Core)
+   Target      : Microchip/Atmel ATF16V8B-15PU SPLD (WinCUPL device G16V8),
+                 U7 on the AT89C51RC2 board (11.0592 MHz, /EA = Vcc)
+   Toolchain   : WinCUPL 5.0a (compile -> lab3.jed, simulate with lab3.si)
+   Leveraged   : Lab 2 lab2.pld (my own file; pinout and CSPERIPH equation
+                 carried forward). Chip-select style follows the WinCUPL
+                 examples in the ECEN 5613 lecture notes.
+   Description : Address decode / strobe logic that turns the M48Z35Y
+                 NVSRAM (U4) into external XRAM DATA memory for Lab 3.
+                 In Lab 2 the NVSRAM was CODE memory (selected by /PSEN);
+                 in Lab 3 it is DATA memory (selected by /RD and /WR).
+   Status      : DRAFTED - not yet verified on hardware
+   ======================================================================
+
+   LAB 3 MEMORY MAP  [Lab3 Step 3]
+   ---------------------------------------------------------------------
+   CODE space (/PSEN, /EA = Vcc):
+     0x0000-0x7FFF  AT89C51RC2 internal 32KB flash (PAULMON2 + extra.asm,
+                    or the SDCC program).  Fetches here never leave the
+                    chip, so /PSEN stays HIGH for them.
+     0x8000-0xFFFF  external code space - nothing installed in Lab 3
+                    (Lab 2's NVSRAM-as-code is removed).
+   DATA (XRAM) space (MOVX):
+     0x0000-0x03FF  1KB internal XRAM (needs AUXR XRS1:XRS0 = 11b and
+                    EXTRAM = 0).  These MOVX cycles stay inside the CPU:
+                    /RD and /WR are NOT pulsed, so U4 is never selected.
+     0x0400-0x7FFF  31KB external M48Z35Y NVSRAM (U4) - this file.
+                    (U4 physical cells 0x0000-0x03FF exist but are
+                    shadowed by the internal XRAM -> intentionally unused,
+                    which is what lets the decode be just "A15 = 0".)
+     0x8000-0xFFFF  nothing responds (block-fill 0xAA test region).
+                    0xF000-0xFFFF is the peripheral page (CSPERIPH) and
+                    0xFFFF is the Virtual Debug Port address (Step 5).
+
+   PIN ASSIGNMENT  (same as Lab 2 except where marked NEW / REPURPOSED)
+   ---------------------------------------------------------------------
+   Signal names RD, WR, PSEN are the ACTUAL pin levels of the 8051's
+   active-low strobes (/RD, /WR, /PSEN): 0 = strobe asserted.
+   Output names ending in _n are active-low.
+   ====================================================================== */
+
+/* ---------------- Inputs ---------------- */
+pin 2  = A12;   /* 8051 P2.4/A12, pin 25 -- unchanged from Lab 2 */
+pin 3  = A13;   /* 8051 P2.5/A13, pin 26 -- unchanged from Lab 2 */
+pin 4  = A14;   /* 8051 P2.6/A14, pin 27 -- unchanged from Lab 2 */
+pin 5  = A15;   /* 8051 P2.7/A15, pin 28 -- unchanged from Lab 2 */
+pin 6  = RD;    /* 8051 P3.7 /RD,  pin 17 -- unchanged from Lab 2 */
+pin 7  = PSEN;  /* 8051 /PSEN,     pin 29 -- unchanged; not used by the
+                   core equations below (kept for the challenge option) */
+pin 8  = WR;    /* NEW for Lab 3: 8051 P3.6 /WR, pin 16.
+                   (it is ALSO still wired straight to U4 pin 27 /W). */
+
+/* ---------------- Outputs ---------------- */
+pin 17 = NVRAM_CS_n;  /* -> U4 pin 20 /E  (chip enable)  -- same pin as
+                         Lab 2, NEW equation (data instead of code)      */
+pin 18 = NVRAM_OE_n;  /* -> U4 pin 22 /G  (output enable) -- REPURPOSED:
+                         was "READ" (unused in Lab 2).  VERIFY: in Lab 2
+                         U4 /G was wired straight to /PSEN; move that wire
+                         to SPLD pin 18.                                  */
+pin 19 = CSPERIPH;    /* active-low peripheral select for 0xF000-0xFFFF,
+                         unchanged from Labs 1-2, still unconnected
+                         (reserved for Lab 4 peripherals)                 */
+pin 16 = VDP_WR_n;    /* NEW, OPTIONAL: active-low pulse during MOVX
+                         writes to 0xF000-0xFFFF.  Logic-analyzer trigger
+                         for the Virtual Debug Port (0xFFFF) in Step 5.
+                         Leave unconnected if not needed.                 */
+
+/* ======================================================================
+   EQUATIONS  (CUPL operators:  !  = NOT,  &  = AND,  #  = OR)
+   ====================================================================== */
+
+/* ---- 1. NVSRAM chip enable  /E  [Lab3 Step 3] -------------------------
+   Select U4 only when
+     (a) A15 = 0           -> address is 0x0000-0x7FFF, AND
+     (b) a DATA strobe is active: /RD = 0 or /WR = 0.
+   "!(RD & WR)" is TRUE when either strobe is low, so
+       NVRAM_CS_n = A15 # (RD & WR)
+   goes LOW only for an external data read or write below 0x8000.
+
+   Why 0x0000-0x03FF does not need to be excluded: after AUXR is set,
+   MOVX to 0x0000-0x03FF hits the internal XRAM and the CPU does NOT pulse
+   /RD or /WR, so term (b) is false and U4 stays deselected.  (Before AUXR
+   is written, only 256 bytes are internal, so MOVX 0x0100-0x03FF WOULD
+   go out to U4 - harmless, it is just the unused low 1KB of the chip.)
+
+   TRADEOFF - simpler "NVRAM_CS_n = A15;" (no strobe qualification):
+     + one fewer SPLD input / wire; /E is valid as soon as P2 is, so the
+       NVSRAM access starts earlier (its slower tELQV = 70 ns path).
+     + still functionally correct: U4 only drives the bus when /G is low
+       (reads) and only writes when /W is low, so there is no contention.
+     - U4 is selected (active current, tens of mA vs a few mA standby)
+       whenever P2.7 = 0, e.g. while code uses P2 as GPIO or does
+       MOVX @Ri with P2 = page < 0x80, and on every internal XRAM access
+       whose DPH < 0x80 - more power and a chip that is "on" during
+       cycles that are not meant for it.
+     - noise/glitches on /W alone could corrupt a cell while /E is low.
+   QUALIFIED version (used here):
+     + U4 is enabled ONLY during real external data cycles, so both /E
+       and /W must be low to write (two independent conditions).
+     + lower power; clean /E pulses are easy to see on the logic analyzer.
+     - /E now arrives one SPLD delay (tPD <= 15 ns, ATF16V8B-15) after
+       /RD or /WR falls.  Read timing check at 11.0592 MHz
+       (TCLCL = 1 / 11.0592 MHz = 90.4 ns, X1 mode):
+         8051 needs data within tRLDV = 5*TCLCL - 165 = 287 ns of /RD low.
+         U4 delivers it in tPD + tELQV = 15 + 70 = 85 ns  -> 202 ns margin.
+       Write: the cycle is the overlap of /E and /W.  /W (direct from /WR)
+       is low for tWLWH = 6*TCLCL - 100 = 442 ns; /E overlaps it for
+       ~442 - 15 = 427 ns, far above the M48Z35Y-70 minimum write pulse
+       (~50 ns).  Data stays valid tWHQX = TCLCL - 50 = 40 ns after /WR
+       rises, and /W ends the write first, so hold time is met.
+       VERIFY: datasheet AC numbers (AT89C51RC2 external data memory
+       timing table, M48Z35Y read/write AC tables, ATF16V8B-15 tPD).
+   ---------------------------------------------------------------------- */
+NVRAM_CS_n = A15 # (RD & WR);
+
+/* Simple alternative (see tradeoff above) - comment the line above and
+   uncomment this one if you choose NOT to wire /WR into SPLD pin 8:
+NVRAM_CS_n = A15;
+*/
+
+/* ---- 2. NVSRAM output enable  /G  [Lab3 Step 3] ------------------------
+   U4 may drive the data bus only during an external DATA READ, so /G
+   simply follows /RD.  /PSEN is deliberately left OUT: in Lab 3 the
+   NVSRAM is not code memory (with /EA = Vcc all code below 0x8000 comes
+   from internal flash), so a code fetch must never turn U4's outputs on.
+   Combined with /E above, U4 drives P0 only when A15 = 0 AND /RD = 0.
+   Routing /G through the SPLD (instead of a direct /RD wire) costs one
+   tPD (15 ns; tGLQV 35 ns -> 50 ns << 287 ns) but lets the challenge
+   equations below change /G without rewiring the board.                */
+NVRAM_OE_n = RD;
+
+/* ---- 3. Peripheral chip select (unchanged from Labs 1-2) ---------------
+   Active LOW for the 4KB page 0xF000-0xFFFF (A15..A12 all 1).  Not used
+   by Lab 3 hardware; kept so Lab 4 peripherals can be added without a
+   new SPLD image.  Note it is NOT qualified by a strobe (a Lab 4 device
+   must gate it with /RD or /WR itself, or this equation must change).  */
+CSPERIPH = !(A15 & A14 & A13 & A12);
+
+/* ---- 4. Virtual Debug Port write strobe (NEW, optional) [Lab3 Step 5] --
+   Low ONLY while the CPU executes MOVX @DPTR,A to 0xF000-0xFFFF
+   (i.e. /WR low and A15..A12 = 1111).  The VDP address is 0xFFFF; the
+   SPLD only sees A15..A12, so use this as the logic-analyzer trigger /
+   clock qualifier and read the full address and data (AD0-AD7 at /WR
+   time) on the analyzer.  Nothing else in the system responds to this
+   page, so the write is harmless.                                       */
+VDP_WR_n = WR # !(A15 & A14 & A13 & A12);
+
+/* ======================================================================
+   OPTIONAL - CHALLENGE (Step 8 note): execute downloaded code from SRAM
+   ----------------------------------------------------------------------
+   NOT part of the core design.  To use: comment out equations 1 and 2
+   above, uncomment the block below, wire A10 (P2.2, 8051 pin 23) to SPLD
+   pin 9 and A11 (P2.3, 8051 pin 24) to SPLD pin 11 (VERIFY both pins are
+   free on your board), recompile, re-simulate, re-program U7.
+
+   Why not "make 0x6000-0x7FFF readable by /PSEN"?  With /EA = Vcc the
+   RC2 fetches ALL code below 0x8000 from internal flash and never pulses
+   /PSEN for it, so an external code window MUST sit at 0x8000 or above.
+
+   Plan: a 1KB code+data window at 0x8000-0x83FF.  U4 ignores A15, so
+   0x8000-0x83FF lands on U4 physical cells 0x0000-0x03FF - the low 1KB
+   that is unused (shadowed) in the core map.  Therefore:
+     - data 0x0400-0x7FFF behaves exactly as in the core design,
+     - the window never aliases any XRAM data byte,
+     - PAULMON 'D' writes the downloaded hex (ORG 0x8000) with MOVX /WR,
+       then 'J 8000' fetches it back with /PSEN.
+   Window decode: A15=1 and A14..A10 = 0  (0x8000-0x83FF).
+   /G must now respond to /RD OR /PSEN, i.e. Lab 2's old READ equation.
+   Side effects to discuss with the TA:
+     - the 0x8000-0xFFFF 0xAA block-fill now ALSO writes the window
+       (dump 0x8000-0x83FF and you will see 0xAA, not open bus);
+     - PAULMON's program-header scan (bmem..emem) stays inside flash
+       unless you raise emem.
+   CUPL intermediate variables (no pin number) are used for readability.
+   (Block is a single comment - CUPL does not allow nested comments.)
+
+pin 9  = A10;
+pin 11 = A11;
+
+DATA_ACC   = !A15 & !(RD & WR);
+WIN_ADDR   = A15 & !A14 & !A13 & !A12 & !A11 & !A10;
+WIN_ACC    = WIN_ADDR & !(RD & WR & PSEN);
+NVRAM_CS_n = !(DATA_ACC # WIN_ACC);
+NVRAM_OE_n = RD & PSEN;
+
+   ====================================================================== */

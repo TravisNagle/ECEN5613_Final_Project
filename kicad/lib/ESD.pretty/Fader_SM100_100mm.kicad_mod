@@ -1,0 +1,274 @@
+(footprint "Fader_SM100_100mm"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Terwin SM100 100mm motorized fader (Alps RSA0N11M9 clone), THT. Origin = centre of travel, motor toward -Y, top view. Dimensions from user's own datasheet-image measurement - VERIFY against part before fab. Motor is outside courtyard; needs board notch.")
+	(tags "fader motorized slide pot SM100 RSA0N11M9")
+	(property "Reference" "REF**"
+		(at 0 -75 0)
+		(layer "F.SilkS")
+		(uuid "b2ea81a8-7680-43d0-9d4f-cbbdd6b5687a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Fader_SM100_100mm"
+		(at 0 75 0)
+		(layer "F.Fab")
+		(uuid "35535b11-98fa-487e-a586-5b2bccc6070c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ae63a18c-3fb9-4bcb-b915-caaf1a04c23d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "87512588-c150-4f45-aa76-a3f82c84a64b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -8 -71.3)
+		(end 8 -71.3)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "2b88e190-7c9f-4b96-8607-3b4a755bb577")
+	)
+	(fp_line
+		(start -8 71.5)
+		(end -8 -71.3)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "5a5b0ee3-dac1-49ef-9b95-9a2f86059b94")
+	)
+	(fp_line
+		(start 8 -71.3)
+		(end 8 71.5)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "10ec57eb-f7bd-4cd5-854a-6f3d73bd1459")
+	)
+	(fp_line
+		(start 8 71.5)
+		(end -8 71.5)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "3b088e08-7d44-4a46-9609-ab02a3e89d0a")
+	)
+	(fp_line
+		(start -8.5 -72)
+		(end 8.5 -72)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "f2b09799-e550-410e-944a-349bc4321d67")
+	)
+	(fp_line
+		(start -8.5 72)
+		(end -8.5 -72)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "7776481c-c190-4c72-b19a-663b76a9bcb2")
+	)
+	(fp_line
+		(start 8.5 -72)
+		(end 8.5 72)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "5633be87-8b3c-49c8-87c7-36e4f82a3d4f")
+	)
+	(fp_line
+		(start 8.5 72)
+		(end -8.5 72)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "f551828e-1c02-4ed7-bb4d-eab735d073ad")
+	)
+	(fp_line
+		(start -8 -71.3)
+		(end 8 -71.3)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "2a2c4090-ee00-46bd-959e-27297f066626")
+	)
+	(fp_line
+		(start -8 71.5)
+		(end -8 -71.3)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "d401fbaf-24a2-4e95-8d47-8a891e208611")
+	)
+	(fp_line
+		(start 0 -50)
+		(end 0 50)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "4d52219f-3c82-4095-8a2e-ff30fc1fe625")
+	)
+	(fp_line
+		(start 8 -71.3)
+		(end 8 71.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "72ce5deb-a6a0-444d-86f5-0e7d3c348a27")
+	)
+	(fp_line
+		(start 8 71.5)
+		(end -8 71.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "1fde8463-43e0-4685-8474-c5ed909c929d")
+	)
+	(fp_circle
+		(center 0 -85)
+		(end 12.2 -85)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "ca3a31bf-3ca7-49b4-bf39-3fae8e293fba")
+	)
+	(fp_text user "MOTOR"
+		(at 0 -69 0)
+		(layer "F.SilkS")
+		(uuid "5563d527-2b92-4a40-9e14-7acc0dd304aa")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "1"
+		(at 1.875 -67 0)
+		(layer "F.SilkS")
+		(uuid "a099d20a-f643-4a83-8ce2-ff84098fb031")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "Motor Ø24.4 at (0,-85) hangs ~14.5 mm below the PCB top surface incl. terminals; needs board notch/cutout. Pin 3 = 0% end. VERIFY with calipers."
+		(at 14 -60 0)
+		(layer "Cmts.User")
+		(uuid "e0240f44-f8c2-42c6-9de3-3e2a64d35ac9")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.1)
+			)
+		)
+	)
+	(pad "" np_thru_hole circle
+		(at 0 -48)
+		(size 2.1 2.1)
+		(drill 2.1)
+		(layers "*.Cu" "*.Mask")
+		(uuid "842b5dd3-f601-40c5-8cdf-7089831d44bc")
+	)
+	(pad "" np_thru_hole circle
+		(at 0 48)
+		(size 2.1 2.1)
+		(drill 2.1)
+		(layers "*.Cu" "*.Mask")
+		(uuid "1c617a1d-85d9-4cb2-898e-dd5b87e217d3")
+	)
+	(pad "1" thru_hole circle
+		(at 1.875 -63.75)
+		(size 2.6 2.6)
+		(drill 1.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "924b1709-f9f6-4de3-ae42-83de130cbdc3")
+	)
+	(pad "2" thru_hole circle
+		(at 5.63 -63.75)
+		(size 2.6 2.6)
+		(drill 1.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "1deaf606-2a31-4901-8aa9-64734c0f5250")
+	)
+	(pad "3" thru_hole circle
+		(at 1.875 63.75)
+		(size 2.6 2.6)
+		(drill 1.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "a81a6cdb-e3f7-4497-b7cf-b6eb7e9817f6")
+	)
+	(pad "T" thru_hole circle
+		(at -1.875 63.75)
+		(size 2.6 2.6)
+		(drill 1.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "c86084c4-27c3-41c3-9c45-67ced0e011a4")
+	)
+	(embedded_fonts no)
+)

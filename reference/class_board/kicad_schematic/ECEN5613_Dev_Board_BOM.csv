@@ -1,0 +1,51 @@
+Item,Qty,References,Value,Description,Footprint
+1,1,C1,0.01uF,Regulator input bypass,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+2,1,C2,10uF,Regulator output bulk capacitor,Capacitor_THT:CP_Radial_D5.0mm_P2.50mm
+3,1,C3,10uF,Power-on reset timing capacitor,Capacitor_THT:CP_Radial_D5.0mm_P2.50mm
+4,1,C4,0.1uF,Decoupling capacitor at U1 pins 20 and 40,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+5,2,"C5, C6",27pF,Crystal load capacitor,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+6,1,C7,0.1uF,Decoupling capacitor at U3 Vcc/GND pins,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+7,1,C8,0.1uF,Decoupling capacitor at U7 Vcc/GND pins,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+8,1,C9,0.1uF,Decoupling capacitor at U4 Vcc/GND pins,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+9,4,"C10, C11, C12, C13",1uF,"MAX232 charge-pump capacitor, polarized (C12 VS+ to VCC, C13 VS- to GND)",Capacitor_THT:CP_Radial_D5.0mm_P2.50mm
+10,1,C14,0.1uF,Decoupling capacitor at U6 pins 16 and 15,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+11,1,C15,0.1uF,OPTIONAL /INT0 debounce capacitor,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+12,4,"D1, D2, D3, D4",1N4003,"Rectifier diode, 1 A 200 V (bridge)",Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal
+13,1,D5,1N4003,Regulator reverse-discharge protection diode,Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal
+14,1,D6,LED,Power-on indicator LED,LED_THT:LED_D5.0mm
+15,1,D7,1N4148,"Small-signal diode, RST negative clamp",Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal
+16,1,D8,LED,"Port-pin indicator LED (Item 4, driven via Q1)",LED_THT:LED_D5.0mm
+17,4,"H1, H2, H3, H4",Standoff #4-40 x 1/2in,"Mounting hole, #4-40 standoff",MountingHole:MountingHole_3.2mm_M3
+18,1,J1,Power jack 2.1mm,"2.1 mm coaxial DC power jack, PCB mount",Connector_BarrelJack:BarrelJack_Horizontal
+19,1,J4,9-pin header,"9-pin header wired 1:1 to DB9 J5: 1-4-6 tied, 2 to U6.14, 3 to U6.13, 5 to GND, 7-8 tied, 9 unwired",Connector_PinHeader_2.54mm:PinHeader_1x09_P2.54mm_Vertical
+20,1,J5,DB9 female,DE-9 (DB9) female RS-232 connector,Connector_Dsub:DSUB-9_Female_Horizontal_P2.77x2.84mm_EdgePinOffset7.70mm_Housed_MountingHolesOffset9.12mm
+21,1,J6,Jumper,"2-pin header + jumper, board current measurement",Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+22,1,J14,EA select,"3-pin header: pin 1 = GND, pin 2 = /EA, pin 3 = +5V (jumper 2-3 = internal flash, 1-2 = external memory)",Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical
+23,1,Q1,PN2907A,"PNP switching transistor, LED driver high-side switch",Package_TO_SOT_THT:TO-92_Inline
+24,1,R1,390,LED series resistor,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+25,1,R2,100,Reset switch current limit,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+26,1,R3,10K,Reset pull-down / RC timing resistor,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+27,1,R4,10K,"Port 0 pull-up resistor bank, bussed SIP-10 (marking 10x-1-103; pin 1 common to Vcc, pins 2-9 to AD0-AD7 / U1 pins 39-32, pin 10 not connected)",Resistor_THT:R_Array_SIP10
+28,1,R7,4.7K,Q1 base resistor (LED driver),Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+29,1,R5,330,D8 LED series resistor,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+30,1,R6,1K,/PSEN series resistor: /PSEN -> R6 -> SW3 -> GND,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+31,1,SW1,SPST,SPST power switch,Button_Switch_THT:SW_DIP_SPSTx01_Slide_9.78x4.72mm_W7.62mm_P2.54mm
+32,1,SW2,Reset SW,"Momentary NO pushbutton, run-time reset",Button_Switch_THT:SW_PUSH_6mm
+33,1,SW3,PSEN button,Momentary NO pushbutton: hold through reset to force the Atmel bootloader (FLIP/batchisp),Button_Switch_THT:SW_PUSH_6mm
+34,1,SW4,INT0 button,"Momentary NO pushbutton, /INT0 (P3.2) wake from Idle / Power-Down",Button_Switch_THT:SW_PUSH_6mm
+35,1,U1,8051 (40-pin DIP),"8051 / MCS-51 microcontroller, 40-pin DIP (8031, 80C51, 87C51, DS89C4x0)",Package_DIP:DIP-40_W15.24mm_Socket
+36,1,U2,LM7805,"+5 V linear regulator, 1 A, TO-220",Package_TO_SOT_THT:TO-220-3_Vertical
+37,1,U3,SN74LS373N,Octal transparent latch - demultiplexes AD0-AD7 into A0-A7 on ALE,Package_DIP:DIP-20_W7.62mm_Socket
+38,1,U7,ATF16V8B-15PU,"SPLD (GAL16V8 compatible) - address decode, NVSRAM chip select / output enable (Lab 3: NVRAM_CS_n, NVRAM_OE_n, CSPERIPH_n, VDP_WR_n)",Package_DIP:DIP-20_W7.62mm_Socket
+39,1,U4,M48Z35Y-70PC1,"NVSRAM used as XRAM data memory (Lab 3), 28-pin, BQ4011YMA / M48Z35Y-70PC1, wire-wrap DIP socket",Package_DIP:DIP-28_W15.24mm_Socket
+40,1,U6,MAX232,"Dual RS-232 driver/receiver, DIP-16 (MAX232 / MAX232CPE / MAX232N)",Package_DIP:DIP-16_W7.62mm_Socket
+41,1,Y1,11.0592MHz,"11.0592 MHz crystal, HC-49",Crystal:Crystal_HC49-U_Vertical
+42,1,-,,"PCB, ECEN 5613 development board, 2 layer",
+43,1,-,,"40-pin machined DIP socket, 0.6 in row spacing (for U1)",
+44,8,-,,#4-40 screws for the standoffs,
+45,1,-,,"9-12 VDC / 500 mA wall adapter, 2.1 mm plug (either polarity)",
+46,1,-,,Shorting jumper for J6,
+47,2,-,,20-pin wire-wrap DIP socket (for U3 and U7),
+48,1,-,,"28-pin wire-wrap DIP socket (for U4, NVSRAM)",
+49,1,-,,"16-pin wire-wrap DIP socket (for U6, MAX232)",
+50,1,-,,"Wire-wrap wire, 30 AWG, and ID labels for U3/U7/U4",
