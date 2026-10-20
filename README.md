@@ -18,6 +18,7 @@ An 8051-based MIDI foot controller with a motorized fader that stays in sync wit
 | [f26finalproject_8-24-2026.pdf](f26finalproject_8-24-2026.pdf) | Course final-project specification |
 | [reference/](reference/) | Read-only copies of the class dev board (KiCad project, BOM, Lab 3 SPLD, memory map) and the fader datasheet |
 | [kicad/](kicad/) | Main-board KiCad project (`ESD_Main`), project libraries and generator scripts |
+| [kicad/ESD_Main/README.md](kicad/ESD_Main/README.md) | **Main-board status, pre-order checklist and how to regenerate** (start here for the PCB) |
 | [AGENTS.md](AGENTS.md) | Rules and conventions for AI agents working in this repo |
 
 ---

@@ -81,8 +81,9 @@ ZONES = {
     # left of fader 1: ADC and analog front end (keep away from the motor-current path)
     "adc": ((95.0, 40.0, 113.0, 128.0),
             ["U11", "NT1", "R17", "C31", "C32", "C45", "C46", "R13", "R14", "R15", "R16",
-             "R18", "C33", "R19", "R21", "C35", "R22", "R24", "C37", "R25", "R28", "C47", "R29",
-             "JP5", "JP6", "R27"]),
+             "R18", "C33", "R19", "R21", "C35", "R22", "R24", "C37", "R25", "R28", "C47", "R29"]),
+    # pedal tip/ring select jumpers and the VREF_F series resistor sit beside the TRS jack J13
+    "pedal": ((70.0, 21.0, 96.0, 30.0), ["JP5", "JP6", "R27"]),
     # gaps between faders below the drivers: driver caps, EN pull-downs, motor snubbers
     "gap_a": ((130.8, 42.0, 143.2, 132.0), ["C39", "C40", "C41", "R20", "R23", "C34", "C36"]),
     "gap_b": ((160.8, 42.0, 173.2, 132.0), ["C42", "C43", "C44", "R26", "C38"]),
