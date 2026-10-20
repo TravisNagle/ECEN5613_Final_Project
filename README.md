@@ -1,4 +1,4 @@
-# MIDI Foot Controller for Reaper
+# (WIP) MIDI Foot Controller for Reaper
 
 **ECEN 5613 Embedded System Design · Fall 2026 Final Project**
 Travis Nagle & Nathan Cohen
