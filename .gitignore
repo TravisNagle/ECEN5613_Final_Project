@@ -4,6 +4,20 @@ __MACOSX/
 Thumbs.db
 ~$*
 
+# SDCC build output
+*.ihx
+*.hex
+*.lst
+*.rel
+*.rst
+*.sym
+*.map
+*.mem
+*.lk
+*.cdb
+*.adb
+build/
+
 # KiCad: per-user state, caches, locks, autosaves, backups
 *.kicad_prl
 fp-info-cache
@@ -15,9 +29,6 @@ _autosave-*
 \#auto_saved_files\#
 *-backups/
 .history/
-
-# Firmware build output (SDCC/Keil); regenerate with make
-build/
 
 # Autorouter logs (Freerouting)
 kicad/logs/
