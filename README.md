@@ -20,7 +20,7 @@ An 8051-based MIDI control surface for Reaper. Two motorized faders stay in sync
 | [reference/](reference/) | Read-only: class dev board KiCad project, BOM, Lab 3 SPLD and memory map; fader datasheet; parts-kit list |
 | [AGENTS.md](AGENTS.md) | Rules and conventions for AI agents working in this repo |
 
-The custom-PCB draft (`kicad/ESD_Main`, Rev 12) was removed on 2026-10-24. It is still available at git tag `pcb-draft-archive`.
+The custom-PCB draft (`kicad/ESD_Main`, Rev 12) was removed on 2026-10-24. It is still in the git history at commit `735803c`.
 
 ---
 

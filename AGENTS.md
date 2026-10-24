@@ -1,6 +1,6 @@
 # Agent guide to this repo
 
-Shared repo for the ECEN 5613 final project (Travis Nagle, Nathan Cohen). Start at [README.md](README.md); the hardware spec is [Hardware_Map.md](Hardware_Map.md) (Rev 13). The master board is the existing class dev board; all new hardware is hand-built on perf boards. **There is no custom PCB** (the Rev 12 draft is in git tag `pcb-draft-archive`; do not revive it unless asked).
+Shared repo for the ECEN 5613 final project (Travis Nagle, Nathan Cohen). Start at [README.md](README.md); the hardware spec is [Hardware_Map.md](Hardware_Map.md) (Rev 13). The master board is the existing class dev board; all new hardware is hand-built on perf boards. **There is no custom PCB** (the Rev 12 draft is in the git history at commit `735803c`; do not revive it unless asked).
 
 ## Rules
 - **`reference/` is read-only.** It holds copies of the class development board and datasheets. Copy from it; never edit it.
