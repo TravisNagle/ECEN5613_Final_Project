@@ -1,4 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "ESD")(type "KiCad")(uri "${KIPRJMOD}/../lib/ESD.pretty")(options "")(descr "ESD final project footprints"))
-)
