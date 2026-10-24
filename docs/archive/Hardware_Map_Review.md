@@ -1,8 +1,8 @@
 # Review of Hardware_Map Rev 10 (2026-10-19)
 
-> **Status 2026-10-19: folded into [Hardware_Map](Hardware_Map.md) Rev 11.** Kept as the record of the review.
+> **Archived (2026-10-24).** This reviews the Rev 10 custom-PCB design, which was dropped for the class board + perf boards in [Hardware_Map](../../Hardware_Map.md) Rev 13. Its fixes were folded into Rev 11 on 2026-10-19. Part choices here (SN754410, 24LC256, 6N138, DIN-5, IDC ribbon) are no longer current.
 
-Review of [Hardware_Map](Hardware_Map.md) before KiCad 10 capture. Drafted with AI assistance (Anthropic Claude). Pinouts were checked against standard datasheet pinouts from memory; part availability came from a web search (prices and stock **not verified on live distributor pages**, re-check before ordering).
+Review of [Hardware_Map](../../Hardware_Map.md) before KiCad 10 capture. Drafted with AI assistance (Anthropic Claude). Pinouts were checked against standard datasheet pinouts from memory; part availability came from a web search (prices and stock **not verified on live distributor pages**, re-check before ordering).
 
 **Verdict:** the architecture works. The bus decode, LCD timing at X1, MIDI circuits, MAX232, MCP3008, SN754410, 74HC244/125/04, 74LS373, 24LC256 and PCF8574 pin tables are correct. There is **one netlist error**, **one logic-polarity error** and **one part you cannot buy** (PCF8591P). Several smaller changes are recommended.
 
@@ -50,7 +50,7 @@ Buyable: AT89C51RC2-3CSUM ($9.40), 24LC256-I/P ($1.16), MCP3008-I/P ($3.20), Rec
 10. **Grounds:** route motor return current straight from the drivers to the power input (star point) so it never runs under U11 or the AGND area.
 11. **Reverse polarity:** use a **P-FET** (for example a TO-220 or SOT-23 P-FET with Vgs zener). A Schottky drops about 0.5 V and dissipates 0.75 W at 1.5 A.
 12. **5 V:** populate the **R-78E5.0-1.0** by default. A 7805 at 12 V and 0.5 A dissipates 3.5 W. TO-220 and the R-78 both use 2.54 mm pitch, so one 3-hole footprint (plus a heat-sink hole) serves both.
-13. **Supply current:** your design doc ([MIDI-Controller.pdf](MIDI-Controller.pdf), OCR'd) gives the on-hand fader (Alps SM100AN-B10K, 100 mm) as a 10 V motor, 6-11 V range, about **800 mA starting current**. Three faders starting together is about 2.4 A on `VM`, plus about 0.5 A of logic. Size the adapter at **12 V, 3 A** and `F1` at about 3 A hold, and add firmware that staggers motor starts. At 0.8 A per channel the SN754410 (1 A) has little margin and the L293D fallback (0.6 A) has none.
+13. **Supply current:** your design doc ([MIDI-Controller.pdf](../MIDI-Controller.pdf), OCR'd) gives the on-hand fader (Alps SM100AN-B10K, 100 mm) as a 10 V motor, 6-11 V range, about **800 mA starting current**. Three faders starting together is about 2.4 A on `VM`, plus about 0.5 A of logic. Size the adapter at **12 V, 3 A** and `F1` at about 3 A hold, and add firmware that staggers motor starts. At 0.8 A per channel the SN754410 (1 A) has little margin and the L293D fallback (0.6 A) has none.
 14. **Power switch:** the class board's `SW1` is missing from the BOM. Add a power switch, or document that the barrel plug is the switch.
 
 **Misc**
