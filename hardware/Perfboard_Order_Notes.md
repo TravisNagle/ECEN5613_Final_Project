@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Date | 2026-10-24 |
-| Upload file | [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) (cart as checked out: [digikey_cart_2026-10-24.csv](digikey_cart_2026-10-24.csv)) (8 lines) |
+| Upload file | [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) (cart export from 2026-10-24, **not yet ordered**: [digikey_cart_2026-10-24.csv](digikey_cart_2026-10-24.csv)) (8 lines) |
 | Spec this derives from | [Hardware_Map](../Hardware_Map.md) (Phases 1 and 2, section 7) |
 | Kit list | [f26partskit.pdf](../reference/f26partskit.pdf) (Fall 2026 parts kit, 8/24/2026) |
 | Status | **Not yet ordered.** Digi-Key stock comes from cached web pages, not live; check the cart before paying. `VERIFY:` = check on the live site or datasheet |
@@ -179,7 +179,7 @@ One RJ45 jack on the main board (fitted in Phase 2, unplugged until Phase 3) and
 
 ## 5a. Open issue: motor starting current vs the 2 A fuse
 
-[Hardware_Map](../Hardware_Map.md) section 3.5 gives the fader (Alps SM100AN-B10K) as a 10 V motor with about **800 mA starting current** (from the team design doc, `VERIFY:` against the datasheet). Three motors starting together draw about 2.4 A, above the **2 A hold** of the RHEF200 PTC originally ordered, so it could trip. **Resolved 2026-10-24: the order now uses RHEF300HF-ND (3 A hold).** Still stagger motor starts in firmware. The cart export `digikey_cart_2026-10-24.csv` predates this change and still shows the RHEF200. Both drivers are fine: TB6612 1.2 A continuous (3.2 A peak) and TB67H420 1.7 A per channel. The motor is rated 10 V: keep PWM duty capped from the 12 V rail.
+[Hardware_Map](../Hardware_Map.md) section 3.5 gives the fader (Alps SM100AN-B10K) as a 10 V motor with about **800 mA starting current** (from the team design doc, `VERIFY:` against the datasheet). Three motors starting together draw about 2.4 A, above the **2 A hold** of the RHEF200 PTC originally ordered, so it could trip. **Resolved 2026-10-24: the order now uses RHEF300HF-ND (3 A hold).** Still stagger motor starts in firmware. The cart export `digikey_cart_2026-10-24.csv` predates this change and still shows the RHEF200; swap that line in the cart before ordering. Both drivers are fine: TB6612 1.2 A continuous (3.2 A peak) and TB67H420 1.7 A per channel. The motor is rated 10 V: keep PWM duty capped from the 12 V rail.
 
 ## 6. Before you click buy
 
