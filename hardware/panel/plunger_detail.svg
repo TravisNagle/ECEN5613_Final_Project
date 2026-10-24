@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="95.000mm" height="45.000mm" viewBox="0 0 95.000 45.000">
+<rect width="100%" height="100%" fill="#fff"/>
+<rect x="2" y="38.00" width="40" height="1.6" fill="#7a9" stroke="#000" stroke-width="0.2"/>
+<rect x="19.00" y="34.50" width="6" height="3.5" fill="#444" stroke="#000" stroke-width="0.2"/>
+<rect x="20.25" y="33.70" width="3.5" height="0.80" fill="#888" stroke="#000" stroke-width="0.2"/>
+<rect x="2" y="9.82" width="16.90" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
+<rect x="25.10" y="9.82" width="15.00" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
+<rect x="36" y="13.00" width="5" height="25.00" fill="#cc9" stroke="#000" stroke-width="0.2"/>
+<path d="M 20.000 33.400 L 20.000 15.000 L 17.000 15.000 L 17.000 13.000 L 19.000 13.000 L 19.000 6.825 L 25.000 6.825 L 25.000 13.000 L 27.000 13.000 L 27.000 15.000 L 24.000 15.000 L 24.000 33.400 Z" fill="#9cf" stroke="#000" stroke-width="0.2"/>
+<text x="43" y="11.82" font-family="Helvetica, Arial" font-size="2.2" fill="#000">acrylic 3.17</text>
+<text x="43" y="7.82" font-family="Helvetica, Arial" font-size="2.2" fill="#000">stem +3 above panel</text>
+<text x="43" y="25.50" font-family="Helvetica, Arial" font-size="2.2" fill="#000">standoff 25 mm</text>
+<text x="43" y="17.00" font-family="Helvetica, Arial" font-size="2.2" fill="#000">shoulders 10 wide</text>
+<text x="43" y="34.40" font-family="Helvetica, Arial" font-size="2.2" fill="#000">gap 0.3 to switch</text>
+<text x="43" y="39.50" font-family="Helvetica, Arial" font-size="2.2" fill="#000">board top (B3F-1000, 4.3 tall)</text>
+<text x="2" y="4" font-family="Helvetica, Arial" font-size="2.2" fill="#000">plunger: 26.57 long, leg 18.40, stem 6, shoulders 10, leg 4 wide</text>
+<text x="2" y="43.0" font-family="Helvetica, Arial" font-size="2.2" fill="#000">slot in panel: 6.20 x 3.38 mm</text>
+</svg>
