@@ -71,7 +71,7 @@ Sockets and tactile buttons are **not** ordered: you have spares. Count what you
 
 Removed from the first version of the order because the kit or lab has them: 24LC256, 74HC04, all resistors, ceramic caps, trimmer, LEDs, SIP, 1x16 female header, and the 5 V module.
 
-**Still to source (not in this order):** motor supply (Hardware_Map `OPEN` #1); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
+**Still to source (not in this order):** 2 AT42QT1010 touch-sensor breakouts (for example the SparkFun AT42QT1010 capacitive touch breakout, +1 spare; fader touch, Hardware_Map section 3.5); motor supply (Hardware_Map `OPEN` #1); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
 
 ## 4. Before you click buy
 

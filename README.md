@@ -26,7 +26,7 @@ The custom-PCB draft (`kicad/ESD_Main`, Rev 12) was removed on 2026-10-24. It is
 
 ## Features
 
-- **Two motorized faders, synced both ways:** moving a fader changes Reaper's track volume, and Reaper's automation moves the fader. Firmware-inferred touch prevents fighting.
+- **Two motorized faders, synced both ways:** moving a fader changes Reaper's track volume, and Reaper's automation moves the fader. A capacitive touch sensor on each fader knob tells the firmware when a hand is on it, so the motor never fights the user.
 - **USB-MIDI with no drivers:** the 8051 UART talks to a KB2040 acting as a class-compliant USB-MIDI device; Reaper uses its built-in Mackie Control Universal support.
 - **LCD and panel buttons:** 16x4 character LCD on the memory-mapped bus, a five-way D-pad and one button per fader for menus and presets.
 - **Presets:** stored in a 24C16 I2C EEPROM.
@@ -79,7 +79,7 @@ Interrupts only move bytes and set flags; all real work runs in a cooperative ma
 | MIDI parser | Status/data state machine, running status, real-time bytes (Reaper feedback only) |
 | Button scan | Read 0xF800 at about 100 Hz, 20 ms debounce, short and long press |
 | Fader control | MCP3008 reads, PD loop at 250-500 Hz, deadband brake, stall timeout, staggered starts |
-| MCU link | 14-bit pitch bend both ways; touch notes |
+| MCU link | 14-bit pitch bend both ways; touch notes from the knob touch sensors (0xF800 bit 7, P1.5) |
 | Pedal | Averaging, calibration, hysteresis -> CC 11 |
 | LCD + UI | Shadow copy, menu, transient messages |
 | Presets | 24C16 records with checksum |
