@@ -70,7 +70,7 @@ Sockets and tactile buttons are **not** ordered: you have spares. Count what you
 | SN74HCT244N x2 | panel button buffer (no 244/245 in the kit) |
 | CD74HCT273E x2 | direction latch with a defined reset (1 + 1 spare) |
 | 10 uF x2, 470 uF x2 | reference filter, motor bulk |
-| RHEF200 (Digi-Key RHEF200HF-ND), P6KE15A | motor rail protection |
+| RHEF300 (Digi-Key RHEF300HF-ND, 3 A hold), P6KE15A | motor rail protection |
 | 1x40 male header | wiring |
 
 Removed from the first version of the order because the kit or lab has them: 24LC256, 74HC04, all resistors, ceramic caps, trimmer, LEDs, SIP, 1x16 female header, and the 5 V module.
@@ -179,7 +179,7 @@ One RJ45 jack on the main board (fitted in Phase 2, unplugged until Phase 3) and
 
 ## 5a. Open issue: motor starting current vs the 2 A fuse
 
-[Hardware_Map](../Hardware_Map.md) section 3.5 gives the fader (Alps SM100AN-B10K) as a 10 V motor with about **800 mA starting current** (from the team design doc, `VERIFY:` against the datasheet). Three motors starting together draw about 2.4 A, above the **2 A hold** of the RHEF200 PTC in the order, so it may trip. Either stagger motor starts in firmware (planned anyway) or swap to a PTC with about 3 A hold. Both drivers are fine: TB6612 1.2 A continuous (3.2 A peak) and TB67H420 1.7 A per channel. The motor is rated 10 V: keep PWM duty capped from the 12 V rail.
+[Hardware_Map](../Hardware_Map.md) section 3.5 gives the fader (Alps SM100AN-B10K) as a 10 V motor with about **800 mA starting current** (from the team design doc, `VERIFY:` against the datasheet). Three motors starting together draw about 2.4 A, above the **2 A hold** of the RHEF200 PTC originally ordered, so it could trip. **Resolved 2026-10-24: the order now uses RHEF300HF-ND (3 A hold).** Still stagger motor starts in firmware. The cart export `digikey_cart_2026-10-24.csv` predates this change and still shows the RHEF200. Both drivers are fine: TB6612 1.2 A continuous (3.2 A peak) and TB67H420 1.7 A per channel. The motor is rated 10 V: keep PWM duty capped from the 12 V rail.
 
 ## 6. Before you click buy
 
