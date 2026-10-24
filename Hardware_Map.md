@@ -337,6 +337,8 @@ A bit reads 0 when pressed. U16 is read at 0xF800; `/1OE` and `/2OE` are tied to
 
 ### 3.10 I2C and daughter-board connector
 
+> **Perf-board build (2026-10-24):** the daughter bus uses **RJ45** jacks and patch cables instead of the 2x5 IDC below; pinout in [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) section 3d.
+
 - Pull-ups on the main board only: **3.3 k** on `SDA`, `SCL`; **10 k** on `BUS_INT_N`.
 - **U10 24LC256**: A0-A2 GND, `WP` 10 k pull-up to +5 V plus jumper `JP_WP` to GND (jumper on = write enabled, off = protected; WP never floats), 100 nF.
 - **J11** (IDC 2x5, 2.54 mm, shrouded, keyed): the ribbon connector below. BUS_IN and BUS_OUT on a daughter are wired in parallel with no active parts.

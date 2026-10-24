@@ -1,0 +1,9 @@
+﻿"Index","Quantity","Part Number","Manufacturer Part Number","Description","Unit of Measure","Customer Reference","Available","Backorder","Unit Price","Extended Price USD"
+"1","2","MCP3008-I/P-ND","MCP3008-I/P","IC ADC 10BIT 16-PDIP","","U11 fader ADC (+1 spare)","2","0","3.12000","$6.24"
+"2","2","296-1610-5-ND","SN74HCT244N","IC BUFF 4.5V/5.5V 20-PDIP","","U16 panel button buffer (+1 spare)","2","0","1.52000","$3.04"
+"3","2","296-2110-5-ND","CD74HCT273E","IC FF D-TYPE 1-ELE 8-BIT 20-PDIP","","U14 direction latch with /MR (+1 spare); kit 74L","2","0","1.16000","$2.32"
+"4","2","P14419-ND","EEU-FR1E471","CAP ALUM 470UF 20% 25V RADIAL TH","","470 uF 25 V motor rail bulk","2","0","1.00000","$2.00"
+"5","1","RHEF200HF-ND","RHEF200","PTC RESET FUSE 16V 2A RADIAL","","PTC fuse for motor rail","1","0","0.74000","$0.74"
+"6","2","25TWL10MEFC5X11-ND","25TWL10MEFC5X11","CAP ALUM 10UF 20% 25V RADIAL TH","","10 uF 25 V (ADC reference filter; kit 10 uF are","2","0","0.27000","$0.54"
+"7","1","P6KE15AFSCT-ND","P6KE15A","TVS DIODE 12.8VWM 21.2VC DO15","","TVS for motor rail","1","0","1.22000","$1.22"
+

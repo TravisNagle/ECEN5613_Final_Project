@@ -1,0 +1,9 @@
+Quantity,Digi-Key Part Number,Manufacturer Part Number,Manufacturer,Customer Reference
+2,MCP3008-I/P-ND,MCP3008-I/P,Microchip Technology,U11 fader ADC (+1 spare)
+2,296-1610-5-ND,SN74HCT244N,Texas Instruments,U16 panel button buffer (+1 spare)
+2,296-2110-5-ND,CD74HCT273E,Texas Instruments,U14 direction latch with /MR (+1 spare); kit 74LS374 is a lower-cost option
+2,,ECA-1EM100,Panasonic,10 uF 25 V (ADC reference filter; kit 10 uF are used by the class board)
+2,,EEU-FR1E471,Panasonic,470 uF 25 V motor rail bulk
+1,RHEF200HF-ND,,Littelfuse,PTC fuse for motor rail
+1,,P6KE15A,Littelfuse,TVS for motor rail
+1,,PRPC040SAAN-RC,Sullins Connector Solutions,1x40 male header (insurance; kit strips may run out)
