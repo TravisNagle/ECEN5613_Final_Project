@@ -1,0 +1,46 @@
+{
+  "schematic": {
+    "meta": {
+      "version": 1
+    }
+  },
+  "text_variables": {},
+  "meta": {
+    "filename": "ESD_Final.kicad_pro",
+    "version": 3
+  },
+  "sheets": [
+    [
+      "614e9820-a07a-5e70-9046-c8df6687b07f",
+      "Root"
+    ],
+    [
+      "5da33218-743d-54d3-b062-11b7c26fcda2",
+      "Class board: MCU, latch, decode, reset, status LED"
+    ],
+    [
+      "94a5aec8-9570-55bb-8d54-4af9b90a2472",
+      "Class board: Power, motor driver, direction latch"
+    ],
+    [
+      "9448c273-bb3f-55db-8054-e7ff7e4d5c67",
+      "Class board: Serial, USB-MIDI, I2C, panel cables"
+    ],
+    [
+      "340f4a68-8fb6-5ebf-bb40-c714e0bf5b01",
+      "D-pad board: Button buffer, fader ADC, D-pad, LCD"
+    ],
+    [
+      "59443c7d-f22a-5595-9c62-4284363114f9",
+      "Fader button board: F1/F2 and touch sensors"
+    ],
+    [
+      "201d2430-03c0-5edd-9082-739ac543d899",
+      "Panel Mounted: Faders, LCD, pedal jack"
+    ],
+    [
+      "91723df5-1735-5477-9d76-18dbaad2cf1c",
+      "Button daughter board: PCF8574 on the I2C bus (Phase 3)"
+    ]
+  ]
+}

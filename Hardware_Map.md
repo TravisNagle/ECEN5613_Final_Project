@@ -5,7 +5,7 @@
 | File name | `Hardware_Map.md` |
 | Course | ECEN 5613 Embedded System Design, Fall 2026, Final Project |
 | Team | Nathan Cohen (analog and control), Travis Nagle (MIDI and interface) |
-| Document revision | **Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
+| Document revision | **Rev 13.5, 2026-10-25: KiCad schematic added; SW1 correction (section 3.9).** Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
 | Status | **Concept, nothing built.** `VERIFY:` = datasheet check needed before it is trusted. `(MEASURE)` = bench value to fill in. `OPEN` = decision not yet made, see section 9 |
 | Builds on | [class BOM](reference/class_board/kicad_schematic/ECEN5613_Dev_Board_BOM.csv), [Lab 3 memory map](reference/class_board/memory_map_and_xram.md), [lab3.pld](reference/class_board/spld/lab3.pld), PDR [F26_PDR_TravisNagle_NathanCohen.pptx](docs/F26_PDR_TravisNagle_NathanCohen.pptx), spec [f26finalproject_8-24-2026.pdf](docs/f26finalproject_8-24-2026.pdf), fader [datasheet](reference/motor_slider_datasheet.pdf), parts and order record [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed/modified by the students. The course requires AI use to be fully documented in the final report. |
@@ -27,7 +27,7 @@
 | Daughter boards | `ESD_Pot`, `ESD_Btn` PCBs | Hand-built perf boards, same function |
 | Power | 12 V 3 A barrel, P-FET, R-78E | **One 9 V >= 2 A adapter** into the class board jack: 7805 for logic, motor rail tapped after the bridge (section 3.9) |
 
-**Schematic deliverable**: the course requires a complete schematic PDF from a schematic capture tool (KiCad 10), with pin numbers and signal names, even without a PCB. Plan one schematic-only KiCad project covering the class-board changes, the main-side circuits and both daughter boards (ask before creating it, see [AGENTS.md](AGENTS.md)). Net names are the ones in this document; every component gets a `Phase` field (section 7).
+**Schematic deliverable**: the course requires a complete schematic PDF from a schematic capture tool (KiCad 10), with pin numbers and signal names, even without a PCB. It is in [hardware/kicad/ESD_Final/](hardware/kicad/ESD_Final/) (PDF: [ESD_Final_schematic.pdf](hardware/kicad/ESD_Final/ESD_Final_schematic.pdf)), generated from [hardware/kicad/tools/design.py](hardware/kicad/tools/design.py): a root sheet with the boards and cables, then one sheet per board (class board x3, D-pad board, fader button board, Panel Mounted, button daughter board). Every component has a `Phase` and a `Board` field; net names are the ones in this document. Schematic refs that differ from this document: D-pad ends of the panel cables J30/J31 (J20/J21 here are the class ends), J32/J40 = J23, U9 drawn with the pin-compatible 74LS157 symbol, U10 with the 24LC16 symbol.
 
 ---
 
@@ -38,7 +38,7 @@ The **class board** keeps the AT89C51RC2 at 11.0592 MHz, its 74LS373 latch and A
 ```
   CLASS BOARD (master, existing)                  |  MAIN-SIDE CIRCUITS (panel / bottom split: section 3.13)
                                                   |
-  J1 9 V jack -> D1-D4 -> SW1 -> U2 7805 -> +5 V =====> +5 V / GND: logic, LCD, daughters
+  J1 9 V jack -> SW1 -> D1-D4 -> U2 7805 -> +5 V =====> +5 V / GND: logic, LCD, daughters
                                                   |    VM motor rail: bridge output via PTC, TVS, 470 uF (3.9)
   +-----------+ AD0-7  +------+ Q0,Q1 (A0,A1) ------> LCD RS, R/W     +-------------------+
   | U1        |------->| U3   |                   |    LCD_E -------->| LCD1 16x4 HD44780 |
@@ -293,7 +293,7 @@ A bit reads 0 when pressed. U16 is read at 0xF800; `/1OE` and `/2OE` are tied to
 One **9 V DC, 2 A or more** adapter (2.5-3 A preferred, 2.1 mm plug, either polarity) into the class board jack J1 replaces the course's 9 V / 500 mA adapter and feeds both the logic and the motors.
 
 ```
-J1 9 V >= 2 A --> D1-D4 bridge --+--> SW1 --> U2 7805 --> +5 V (logic)
+J1 9 V >= 2 A --> SW1 --> D1-D4 bridge --+--> U2 7805 --> +5 V (logic)
                   (1N4003)       |
                                  +--> JP_VM --> PTC F1 --> VM: TVS P6KE15A, 470 uF --> A1 TB6612 VM
 board GND (bridge "-" output) ---+------------------------------------------------> A1 GND (star point)
@@ -301,7 +301,7 @@ board GND (bridge "-" output) ---+----------------------------------------------
 
 | Item | Spec |
 |---|---|
-| Tap point | `VM` comes from the **bridge "+" output** (the 7805 input node at C1, before SW1), not from the jack. Board GND is the bridge "-" output, one diode drop above the adapter's negative pin, so tapping after the bridge keeps a single ground for the TB6612's logic inputs and still accepts either adapter polarity. SW1 is a small slide switch, so motor current never runs through it: logic off means TB6612 `VCC` off and its outputs off |
+| Tap point | `VM` comes from the **bridge "+" output** (`VRECT`, the 7805 input node at C1), not from the jack. Board GND is the bridge "-" output, one diode drop above the adapter's negative pin, so tapping after the bridge keeps a single ground for the TB6612's logic inputs and still accepts either adapter polarity. **SW1 sits before the bridge** (J1 -> SW1 -> D1-D4, per the class board netlist), so it switches the motors too and now carries motor current: `VERIFY:` its rating (>= 2 A) or replace it with a toggle switch rated >= 3 A |
 | `VM` voltage | About 9 - 1.4 = **7.6 V**; the motor sees about 7.1 V after the TB6612 (about 0.5 V drop). Inside the motor's 10 V rating, so **no PWM cap** is needed; the faders move somewhat slower than at 10 V (MEASURE travel time) |
 | Bridge diodes | D1-D4 (1N4003) now carry motor current too: 1 A continuous, about 30 A surge. Two motors start at about 1.6 A (MEASURE), but only for the fraction of a second a fader moves, so the average stays well under 1 A. Firmware keeps the stall timeout and staggers motor starts. `VERIFY:` diode temperature after a 30-minute run; if they get hot, replace D1-D4 with 3 A diodes (for example 1N5404; check that the thicker leads fit the class board holes) |
 | Protection on `VM` | `JP_VM` jumper to isolate, PTC F1 (RHEF200 2 A hold or RHEF300 3 A, both on the order), TVS P6KE15A (12.8 V standoff), 470 uF bulk at A1, 0.1 uF at A1 `VM` |
@@ -724,3 +724,4 @@ Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5
 | 13.2 | 2026-10-24: physical build in two levels (section 3.13). Panel: D-pad board with U16 '244 and U11 MCP3008, fader strip with F1/F2 and the A4/A5 touch sensors. Bottom: class board and everything else. Cables J20 (2x6 bus), J21 (2x5 I/O, 1 spare), J22 (motor), panel jumper J23. Closes `OPEN` #2 |
 | 13.3 | 2026-10-24: touch sensors are bare AT42QT1010-TSHR chips on SOT-23-6 adapters (the SparkFun breakout has its own touch pad). Datasheet pinout and circuit in section 3.5 and A.15: `SYNC/MODE` to GND (low-power mode keeps the about 60 s hold limit), no pull-up on `TOUCH1`, 10 nF HeartBeat filter on each `OUT`, RC-filtered `VDD` |
 | 13.4 | 2026-10-24: power decided (closes `OPEN` #1). One 9 V >= 2 A adapter into the class board jack; `VM` tapped at the bridge "+" output before SW1 through `JP_VM`, PTC, TVS and 470 uF; A1 ground to the bridge "-" output. Motor sees about 7.1 V (no PWM cap). 12 V adapter is a drop-in upgrade |
+| 13.5 | 2026-10-25: KiCad schematic added (hardware/kicad/ESD_Final, ERC clean, netlist checked against design.py). Correction from the class board netlist: SW1 is before the bridge, so it carries motor current (`VERIFY:` rating or replace) |

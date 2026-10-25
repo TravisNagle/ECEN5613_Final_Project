@@ -23,7 +23,9 @@ Shared repo for the ECEN 5613 final project (Travis Nagle, Nathan Cohen). Start 
 | Path | Contents |
 |---|---|
 | `Hardware_Map.md` | Spec, netlist (Appendix A), open items, revision history |
-| `hardware/` | Parts/order notes and Digi-Key CSVs; (planned) KiCad schematic-only project |
+| `hardware/kicad/` | Schematic project `ESD_Final/`, libraries `lib/` (ECEN5613 copy, ESD_Final module symbols), generators `tools/` (edit `design.py`, then run `gen_symbols.py` and `gen_schematic.py`; check with ERC and `check_netlist.py`) |
+| `hardware/panel/` | Acrylic panel laser-cut SVG generator |
+| `hardware/` | Parts/order notes and Digi-Key CSVs |
 | `spld/` | (planned) `final.pld` and its simulation and fuse files |
 | `firmware/` | (planned) SDCC sources and the KB2040 CircuitPython bridge |
 | `tools/` | (planned) test scripts |

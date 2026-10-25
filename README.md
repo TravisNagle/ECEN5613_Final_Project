@@ -12,6 +12,8 @@ An 8051-based MIDI control surface for Reaper. Two motorized faders stay in sync
 | File | What it is |
 |---|---|
 | [Hardware_Map.md](Hardware_Map.md) | **Authoritative hardware spec (Rev 13)**: architecture, class-board changes, pin map, memory map, netlist (Appendix A), build stages, open items |
+| [hardware/kicad/ESD_Final/ESD_Final_schematic.pdf](hardware/kicad/ESD_Final/ESD_Final_schematic.pdf) | **Schematic** (KiCad 10, one sheet per board), generated from [hardware/kicad/tools/design.py](hardware/kicad/tools/design.py) |
+| [hardware/panel/](hardware/panel/) | Laser-cut acrylic top panel (SVG generator) |
 | [hardware/Perfboard_Order_Notes.md](hardware/Perfboard_Order_Notes.md) | Kit parts mapping, on-hand modules, Digi-Key order (not yet placed) and alternates |
 | [docs/f26finalproject_8-24-2026.pdf](docs/f26finalproject_8-24-2026.pdf) | Course final-project specification (deliverables, report and submission rules) |
 | [docs/F26_PDR_TravisNagle_NathanCohen.pptx](docs/F26_PDR_TravisNagle_NathanCohen.pptx) | Preliminary design review slides (10/19) |
@@ -157,7 +159,7 @@ Feature freeze **11/30** · Demo **12/4** · Return kit items (including the NVS
 
 ```
 Hardware_Map.md   hardware spec (start here)
-hardware/         parts and order notes, Digi-Key CSVs; (planned) KiCad schematic-only project
+hardware/         kicad/ (schematic project, libraries, generators), panel/ (acrylic panel), parts and order notes
 spld/             (planned) final.pld, its simulation input and .jed
 firmware/         8051 C source (SDCC) and the KB2040 bridge script
 tools/            test scripts (MIDI-OX configs, benchmarks)

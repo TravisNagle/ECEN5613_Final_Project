@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ECEN5613")(type "KiCad")(uri "${KIPRJMOD}/../lib/ECEN5613.kicad_sym")(options "")(descr "ECEN 5613 development board symbols (copy of reference/)"))
+  (lib (name "ESD_Final")(type "KiCad")(uri "${KIPRJMOD}/../lib/ESD_Final.kicad_sym")(options "")(descr "ESD final project module symbols"))
+)
