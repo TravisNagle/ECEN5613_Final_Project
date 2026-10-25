@@ -4,16 +4,16 @@
 <rect x="2" y="38.00" width="40" height="1.6" fill="#7a9" stroke="#000" stroke-width="0.2"/>
 <rect x="19.00" y="34.50" width="6" height="3.5" fill="#444" stroke="#000" stroke-width="0.2"/>
 <rect x="20.25" y="34.00" width="3.5" height="0.50" fill="#888" stroke="#000" stroke-width="0.2"/>
-<rect x="2" y="14.50" width="16.90" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
-<rect x="25.10" y="14.50" width="15.00" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
-<rect x="36" y="17.68" width="5" height="20.32" fill="#cc9" stroke="#000" stroke-width="0.2"/>
-<path d="M 20.000 33.700 L 20.000 19.680 L 17.000 19.680 L 17.000 17.680 L 19.000 17.680 L 19.000 11.505 L 25.000 11.505 L 25.000 17.680 L 27.000 17.680 L 27.000 19.680 L 24.000 19.680 L 24.000 33.700 Z" fill="#9cf" stroke="#000" stroke-width="0.2"/>
+<rect x="2" y="19.59" width="16.90" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
+<rect x="25.10" y="19.59" width="15.00" height="3.17" fill="#cde" stroke="#000" stroke-width="0.2"/>
+<rect x="36" y="22.76" width="5" height="15.24" fill="#cc9" stroke="#000" stroke-width="0.2"/>
+<path d="M 20.000 33.700 L 20.000 24.760 L 17.000 24.760 L 17.000 22.760 L 19.000 22.760 L 19.000 16.585 L 25.000 16.585 L 25.000 22.760 L 27.000 22.760 L 27.000 24.760 L 24.000 24.760 L 24.000 33.700 Z" fill="#9cf" stroke="#000" stroke-width="0.2"/>
 <text x="43" y="39.50" font-family="Helvetica, Arial" font-size="2.2" fill="#000">board top (white B3F, 4 tall)</text>
 <text x="43" y="34.70" font-family="Helvetica, Arial" font-size="2.2" fill="#000">gap 0.3 to switch</text>
-<text x="43" y="27.84" font-family="Helvetica, Arial" font-size="2.2" fill="#000">standoff 0.8 in (20.32 mm)</text>
-<text x="43" y="19.68" font-family="Helvetica, Arial" font-size="2.2" fill="#000">shoulders 10 wide</text>
-<text x="43" y="16.50" font-family="Helvetica, Arial" font-size="2.2" fill="#000">acrylic 3.17</text>
-<text x="43" y="12.50" font-family="Helvetica, Arial" font-size="2.2" fill="#000">stem +3 above panel</text>
-<text x="2" y="4" font-family="Helvetica, Arial" font-size="2.2" fill="#000">fader button plunger: 22.20 long, leg 14.02, stem 6, shoulders 10, leg 4 wide</text>
+<text x="43" y="30.38" font-family="Helvetica, Arial" font-size="2.2" fill="#000">standoff 0.6 in (15.24 mm)</text>
+<text x="43" y="24.76" font-family="Helvetica, Arial" font-size="2.2" fill="#000">shoulders 10 wide</text>
+<text x="43" y="21.59" font-family="Helvetica, Arial" font-size="2.2" fill="#000">acrylic 3.17</text>
+<text x="43" y="17.59" font-family="Helvetica, Arial" font-size="2.2" fill="#000">stem +3 above panel</text>
+<text x="2" y="4" font-family="Helvetica, Arial" font-size="2.2" fill="#000">fader button plunger: 17.11 long, leg 8.94, stem 6, shoulders 10, leg 4 wide</text>
 <text x="2" y="43.0" font-family="Helvetica, Arial" font-size="2.2" fill="#000">slot in panel: 6.20 x 3.38 mm</text>
 </svg>

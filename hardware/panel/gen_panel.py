@@ -2,7 +2,9 @@
 """
 File        : gen_panel.py
 Author      : Nathan Cohen (generated with AI assistance, Anthropic Claude)
-Revision    : 11, 2026-10-24 (D-pad 0.5 in south; D-pad board holes
+Revision    : 12, 2026-10-24 (fader strip standoffs 0.6 in; strip holes
+              confirmed);
+              11, 2026-10-24 (D-pad 0.5 in south; D-pad board holes
               0.05 in right);
               10, 2026-10-24 (measured 7 x 9 hole insets);
               9, 2026-10-24 (D-pad standoffs 0.4 in);
@@ -117,7 +119,7 @@ BUTTONS = {
 #         hole d in acrylic, standoff length = acrylic underside -> board top)
 # Screw sizes confirmed (7 x 9: M3, 2 x 8: M2). 7 x 9 hole insets measured
 # (0.1 in from the left/right edges, 0.15 in from the top/bottom edges, as
-# mounted portrait); 2 x 8 insets are estimates: VERIFY.
+# mounted portrait); 2 x 8 insets (2 mm) confirmed by test fit.
 # Acrylic holes are about 0.5 mm over the screw so the board can be nudged
 # until the switches sit under the plungers.
 BOARDS = {
@@ -127,9 +129,9 @@ BOARDS = {
     'dpad': ('D-pad 7 x 9 cm', 77.0 + 0.05 * IN, 82.0, 70.0, 90.0, (0.1 * IN, 0.15 * IN), 3.6,
              0.4 * IN),
     # 80 x 20 mm, horizontal, below the fader frames and clear of the
-    # bottom-left standoff; M2 standoffs, 0.8 in.
+    # bottom-left standoff; M2 standoffs, 0.6 in.
     'fader': ('fader strip 2 x 8 cm', 0.4 * IN, 176.5, 80.0, 20.0, (2.0, 2.0),
-              2.6, 0.8 * IN),
+              2.6, 0.6 * IN),
 }
 # Plungers nested in the LCD window scrap, one row per entry:
 # 3 fader (2 + 1 spare) and 8 D-pad (5 + 3 spares).
