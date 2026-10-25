@@ -43,7 +43,7 @@
 | TB6612FNG breakout | A1, drives both motors |
 | Pololu TB67H420FTG carrier (board marked md35a) | **Not needed** with two faders (it was the third-motor driver); spare. Note it needs `VIN` >= about 10 V |
 | SN74AHC157N | U9, PWM buffers |
-| USB-PD trigger module | Candidate motor supply, Hardware_Map `OPEN` #1 |
+| USB-PD trigger module | Not used (power is one 9 V adapter, Hardware_Map section 3.9) |
 | Terwin SM100 motor fader(s) | FDR1, FDR2. `VERIFY:` two are on hand |
 | RJ45 breakout boards x5 (ordered 2026-10-24) | Daughter bus. Cat 5e cable on hand |
 | 6 mm tactile switches, DIP sockets | Spares, so they are not in the order |
@@ -74,7 +74,7 @@ Sockets and tactile buttons are **not** ordered: you have spares. Count what you
 
 Removed from the first version of the order because the kit or lab has them: 24LC256, 74HC04, all resistors, ceramic caps, trimmer, LEDs, SIP, 1x16 female header, and the 5 V module.
 
-**Still to source (not in this order):** motor supply (Hardware_Map `OPEN` #1); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
+**Still to source (not in this order):** a **9 V DC, 2 A or more** (2.5-3 A preferred) adapter with a 2.1 mm plug for the class board jack (Hardware_Map section 3.9; the course adapter is only 500 mA); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
 
 ## 3e. Panel cables J20 and J21 (Hardware_Map section 3.13)
 

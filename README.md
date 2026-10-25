@@ -106,7 +106,7 @@ Starting point only; the full mapping is in Hardware_Map section 5.
 ## Setup
 
 ### Hardware
-1. Power the class board from its 9 V adapter. The motor supply is still being decided (Hardware_Map `OPEN` #1).
+1. Power everything from one **9 V, 2 A or more** adapter in the class board jack; it feeds the logic and the fader motors (Hardware_Map section 3.9).
 2. Plug the KB2040 into the PC by USB-C. It shows up as a USB-MIDI device.
 3. Set `JP_RX` to **KB** for normal use, or **PC** for FLIP and the DB9 terminal.
 
