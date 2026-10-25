@@ -250,7 +250,7 @@ The Lab 4 handout names an **Optrex DMC-20434** (20x4, Epson SED1278F controller
 |---|---|---|
 | 1 | VSS | GND |
 | 2 | VCC | +5 V |
-| 3 | VEE (LCD drive) | `LCD_V0`, kit 10 k pot wiper between +5 V and GND |
+| 3 | VEE (LCD drive) | `LCD_V0`, contrast trimmer wiper between +5 V and GND (10-20 k; the one on hand is 20 k, marked 203) |
 | 4 | RS | `LCD_RS` (U3.2, latched `A0`) |
 | 5 | R/W | `LCD_RW` (U3.5, latched `A1`) |
 | 6 | E | `LCD_E` (U7.14) |
@@ -417,7 +417,7 @@ Notes:
 ### 4.1 Common
 
 - Two RJ45 breakouts in parallel (bus in, bus out), pinout as section 3.10; no active parts in the pass-through.
-- **4-position DIP switch** (to order): positions 1-3 are `A0`, `A1`, `A2` of the board's I2C chip, position 4 spare. Each position has a 10 k pull-up to +5 V and the switch to GND (closed = 0). Label the setting table on the board.
+- **DIP switch** (8-position blocks on hand, x4): positions 1-3 are `A0`, `A1`, `A2` of the board's I2C chip, the rest unused (leave open). Each position has a 10 k pull-up to +5 V and the switch to GND (closed = 0). Label the setting table on the board.
 - 0.1 uF at each IC, 10 uF at the bus-in jack.
 
 ### 4.2 Pot board
@@ -490,7 +490,7 @@ Bring-up tests per phase (summary): P1: power, 8051 alive, bus decode on the log
 
 Today 10/24. Parts order **not yet placed** (course target was 10/20): order now. Feature freeze 11/30; demo 12/4; physical items returned 12/7 (NVSRAM included); report 12/9. Suggested windows (team to confirm): P1 by 11/8, P2 by 11/22, P3 by 11/29.
 
-Kit mapping, the Digi-Key order and alternates: [hardware/Perfboard_Order_Notes.md](hardware/Perfboard_Order_Notes.md). Still to source: a 9 V >= 2 A barrel adapter (section 3.9), pot-board ADC (`OPEN` #3), 4-position DIP switches, button-board tactiles, TRS jack, a second fader if only one is on hand (`VERIFY:` count).
+Kit mapping, the Digi-Key order and alternates: [hardware/Perfboard_Order_Notes.md](hardware/Perfboard_Order_Notes.md). Still to source: a 9 V >= 2 A barrel adapter (section 3.9), pot-board ADC (`OPEN` #3, deferred), button-board tactiles, TRS jack. Both faders and the DIP switches are on hand.
 
 ---
 
@@ -502,7 +502,7 @@ Kit mapping, the Digi-Key order and alternates: [hardware/Perfboard_Order_Notes.
 |---|---|---|---|
 | 1 | ~~Motor rail supply~~ **Closed Rev 13.4**: one 9 V >= 2 A adapter into the class board jack, `VM` tapped at the bridge output (section 3.9) | | |
 | 2 | ~~Where the main-side circuits are built~~ **Closed Rev 13.2**: two levels, panel and bottom, joined by J20 (12-pin), J21 (10-pin) and J22 (motor); section 3.13 | | |
-| 3 | Pot-board ADC part (section 4.2) | P3 order | ADS7828 on a TSSOP-16 DIP adapter |
+| 3 | Pot inputs (section 4.2), deferred to P3. Candidates: (a) an I2C ADC for the chainable pot daughter board (ADS7828 on an adapter, ADS1115 module); (b) no new parts: pots on U11's 5 spare channels (CH2, CH4-CH7) on the panel; (c) no new parts: the spare MCP3008 on the panel sharing U11's SPI lines, chip-select from latch U14 Q4 over J21 pin 10 (8 more inputs) | P3 | (a) ADS7828 on a TSSOP-16 DIP adapter |
 | 4 | KB2040 link: 31,250-baud MIDI stream or 115,200-baud USB-MIDI packets | Firmware on both ends | 31,250 (the 8051 code stays real MIDI and the DB9 fallback is unchanged) |
 | 5 | ~~Hardware SPI for the MCP3008~~ **Closed Rev 13.1**: P1.5 is now `TOUCH2`; the MCP3008 stays bit-banged | | |
 | 6 | Mechanical layout: where the LCD, two faders and buttons are mounted (panel or board), and how | Build | Faders side by side on the right, LCD top left, D-pad below the LCD |

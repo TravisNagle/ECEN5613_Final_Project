@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Date | 2026-10-24 (trimmed to a parts record on 2026-10-24 when its design content moved into [Hardware_Map](../Hardware_Map.md) Rev 13) |
-| Upload file | [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) (14 lines; touch-sensor chips and panel cable parts added 2026-10-24). The older cart export, **not yet ordered and now out of date**: [digikey_cart_2026-10-24.csv](digikey_cart_2026-10-24.csv) (7 lines, see section 4) |
+| Order | **Digi-Key order 102466363, placed 2026-10-24**, 13 lines, $30.37 before shipping and tax: [digikey_order_102466363.csv](digikey_order_102466363.csv) (Digi-Key's export, with unit prices for the course's costed BOM). Re-upload list matching it: [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) |
 | Spec this derives from | [Hardware_Map](../Hardware_Map.md) Rev 13 (circuits, pin map, netlist). Design decisions live there, not here |
 | Kit list | [f26partskit.pdf](../reference/f26partskit.pdf) (Fall 2026 parts kit, 8/24/2026) |
-| Status | **Not yet ordered.** Digi-Key stock comes from cached web pages, not live; check the cart before paying. `VERIFY:` = check on the live site or datasheet |
+| Status | **Ordered.** Not in the order: the 1x40 male header (kit strips assumed enough) and everything under "Still to source" in section 3 |
 | Assumption | The class board used the kit parts the way the course BOM says (U1 40-pin, U3 and U7 20-pin, U4 28-pin, U6 16-pin sockets; reset, PSEN, INT0 buttons; LED driver; two 10 uF used) |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed by the student |
 
@@ -44,9 +44,10 @@
 | Pololu TB67H420FTG carrier (board marked md35a) | **Not needed** with two faders (it was the third-motor driver); spare. Note it needs `VIN` >= about 10 V |
 | SN74AHC157N | U9, PWM buffers |
 | USB-PD trigger module | Not used (power is one 9 V adapter, Hardware_Map section 3.9) |
-| Terwin SM100 motor fader(s) | FDR1, FDR2. `VERIFY:` two are on hand |
+| Terwin SM100 motor faders x2 | FDR1, FDR2 (both on hand, confirmed 2026-10-25) |
 | RJ45 breakout boards x5 (ordered 2026-10-24) | Daughter bus. Cat 5e cable on hand |
 | 6 mm tactile switches, DIP sockets | Spares, so they are not in the order |
+| 8-position DIP switch blocks x4 | Daughter-board I2C address switches: positions 1-3 = A0-A2, the rest unused |
 
 ## 2. Kit-only fallback: 74LS374 as the direction latch
 
@@ -67,14 +68,14 @@ Sockets and tactile buttons are **not** ordered: you have spares. Count what you
 | CD74HCT273E x2 | U14 direction latch with a defined reset (+1 spare) |
 | 10 uF x2, 470 uF x2 | `VREF_F` filter, motor bulk |
 | PTC fuse, P6KE15A TVS | Motor rail protection (section 4) |
-| 1x40 male header | Wiring |
+| ~~1x40 male header~~ | Dropped from the order (kit strips) |
 | Microchip AT42QT1010-TSHR x3 (Digi-Key AT42QT1010-TSHRCT-ND) | A4, A5 fader touch sensors (+1 spare), on SOT23-6 to DIP adapters already on hand. Bare chip, because the SparkFun 12041 breakout has its own touch pad. Cs (10 nF X7R, plus 4.7 and 22 nF to tune), 4.7 k Rs, 100 ohm + 10 uF supply filter and 10 nF output filter come from the lab parts; Hardware_Map section 3.5 |
 | Molex 70246-1201 x2, 70246-1001 x2 | J20 (12-pin) and J21 (10-pin) shrouded keyed headers: one on the D-pad board, one on the bottom level (no spares) |
-| Adam Tech FCS-12-SG x2, On Shore 101-106 x2, 3M 3365/12 ribbon x3 ft | Home-made J20 and J21 cables, cut to length (section 3e) |
+| Adam Tech FCS-12-SG x2, On Shore 101-106 x2, 3M 3365/12 ribbon x2 ft | Home-made J20 and J21 cables, cut to length (section 3e) |
 
 Removed from the first version of the order because the kit or lab has them: 24LC256, 74HC04, all resistors, ceramic caps, trimmer, LEDs, SIP, 1x16 female header, and the 5 V module.
 
-**Still to source (not in this order):** a **9 V DC, 2 A or more** (2.5-3 A preferred) adapter with a 2.1 mm plug for the class board jack (Hardware_Map section 3.9; the course adapter is only 500 mA); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
+**Still to source (not in this order):** a **9 V DC, 2 A or more** (2.5-3 A preferred) adapter with a 2.1 mm plug for the class board jack (Hardware_Map section 3.9; the course adapter is only 500 mA); pot-board ADC (`OPEN` #3, deferred; the PCF8591P listed here before is discontinued, and the spare MCP3008 is an option, see Hardware_Map section 9); tactiles for the button board; a 1/4" TRS jack for the pedal.
 
 ## 3e. Panel cables J20 and J21 (Hardware_Map section 3.13)
 
@@ -82,11 +83,11 @@ Home-made cables (team decision 2026-10-24): about half the cost of ready-made S
 
 | Item | Part | Qty | Notes |
 |---|---|---|---|
-| 12-pin socket (J20) | Adam Tech FCS-12-SG: 2x6, 2.54 mm, IDC, **polarizing key**, gold | 2 | Digi-Key 2026-10-24: about 2,100 in stock, sold singly. (The Assmann AWP 12-7540-T is not sold in single quantities; the AWP 12-8540-T has no key.) |
-| 10-pin socket (J21) | On Shore Technology 101-106: 2x5, 2.54 mm, IDC, polarizing key, gold | 2 | Listed on Digi-Key 2026-10-24; `VERIFY:` single-quantity stock. Alternates: Adam Tech FCS-10-SG (same family as the 12-pin, not confirmed) or 3M 89110-0101 (not the -0101HA) |
-| Ribbon | 3M 3365/12, 12 conductors, 0.050 in pitch, 28 AWG (Digi-Key 3M157990-100-ND, ordered by the foot) | 3 ft | One ribbon for both cables: for J21 peel 2 conductors off the edge away from the red stripe |
+| 12-pin socket (J20) | Adam Tech FCS-12-SG (Digi-Key 2057-FCS-12-SG-ND): 2x6, 2.54 mm, IDC, **polarizing key**, gold | 2 | Digi-Key 2026-10-24: about 2,100 in stock, sold singly. (The Assmann AWP 12-7540-T is not sold in single quantities; the AWP 12-8540-T has no key.) |
+| 10-pin socket (J21) | On Shore Technology 101-106 (Digi-Key ED10500-ND): 2x5, 2.54 mm, IDC, polarizing key, gold | 2 | Listed on Digi-Key 2026-10-24; `VERIFY:` single-quantity stock. Alternates: Adam Tech FCS-10-SG (same family as the 12-pin, not confirmed) or 3M 89110-0101 (not the -0101HA) |
+| Ribbon | 3M 3365/12, 12 conductors, 0.050 in pitch, 28 AWG (Digi-Key 19-3365/12100-DS-ND, ordered by the foot) | 2 ft | One ribbon for both cables: for J21 peel 2 conductors off the edge away from the red stripe |
 | 12-pin header | Molex 70246-1201 (Digi-Key 23-0702461201-ND): vertical, shrouded, keying slot | 2 | Unchanged |
-| 10-pin header | Molex 70246-1001: same family | 2 | Unchanged; `VERIFY:` Digi-Key stock. Alternates: 3M N2510-6002RB (vertical) or 3M D2510-5002-AR (Digi-Key MHE10E-ND, right angle) |
+| 10-pin header | Molex 70246-1001 (Digi-Key WM9219-ND): same family | 2 | Ordered. Alternates: 3M N2510-6002RB (vertical) or 3M D2510-5002-AR (Digi-Key MHE10E-ND, right angle) |
 
 Making the cables:
 - **Length:** cut J20 at about 9 in and J21 at about 8 in (team, 2026-10-24), plus about 1/2 in to trim square.
@@ -103,7 +104,7 @@ Making the cables:
 - The TB6612 runs the motors, so the motor rail must stay at or below 13.5 V (the P6KE15A starts conducting around 14-16 V). Keep PWM duty capped for the 10 V motor.
 - Check each line shows **In Stock**; the upload tool may offer substitutes. If a line fails to match, search the manufacturer part number.
 - Part numbers I could not confirm: `EEU-FR1E471` (any 25 V parts of those values work). The 10 uF is now the Rubycon 25TWL10MEFC5X11 (Digi-Key 25TWL10MEFC5X11-ND); the Panasonic ECA-1EM100 was out of stock. The TVS uses Digi-Key 4878-P6KE15ACT-ND (P6KE15A).
-- Quantities include one spare of each IC; the panel cable sockets and headers have no spares (the 3 ft of ribbon leaves enough to remake a cable). Shipping and tariffs are not included.
+- Quantities include one spare of each IC; the panel cable sockets and headers have no spares (2 ft of ribbon covers both cables, about 17-18 in with trim, with a few inches to spare). Shipping and tariffs are not included.
 
 ## 5. Alternates (not in the upload)
 
