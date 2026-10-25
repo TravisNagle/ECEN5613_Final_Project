@@ -5,7 +5,7 @@
 | File name | `Hardware_Map.md` |
 | Course | ECEN 5613 Embedded System Design, Fall 2026, Final Project |
 | Team | Nathan Cohen (analog and control), Travis Nagle (MIDI and interface) |
-| Document revision | **Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5).** Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
+| Document revision | **Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
 | Status | **Concept, nothing built.** `VERIFY:` = datasheet check needed before it is trusted. `(MEASURE)` = bench value to fill in. `OPEN` = decision not yet made, see section 9 |
 | Builds on | [class BOM](reference/class_board/kicad_schematic/ECEN5613_Dev_Board_BOM.csv), [Lab 3 memory map](reference/class_board/memory_map_and_xram.md), [lab3.pld](reference/class_board/spld/lab3.pld), PDR [F26_PDR_TravisNagle_NathanCohen.pptx](docs/F26_PDR_TravisNagle_NathanCohen.pptx), spec [f26finalproject_8-24-2026.pdf](docs/f26finalproject_8-24-2026.pdf), fader [datasheet](reference/motor_slider_datasheet.pdf), parts and order record [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed/modified by the students. The course requires AI use to be fully documented in the final report. |
@@ -17,7 +17,7 @@
 | | Rev 12 (dropped) | Rev 13 (current) |
 |---|---|---|
 | Master board | Custom JLCPCB board `ESD_Main` | **Existing class dev board** (AT89C51RC2, '373, ATF16V8B, MAX232, 7805) with wiring changes (section 2) |
-| New circuits | On the PCB, 0805 SMD reflow | **Hand-built**: perf board(s) and/or wire-wrap on the class board (where: `OPEN` #2) |
+| New circuits | On the PCB, 0805 SMD reflow | **Hand-built** in two levels: panel (perf boards hung under the acrylic) and bottom (class board + perf), section 3.13 |
 | Faders | 3, board-mounted, 2x SN754410 | **2**, Terwin SM100, **one TB6612FNG breakout** |
 | USB-MIDI | DIN-5 + 6N138 + iConnectivity mio | **Adafruit KB2040** USB-MIDI bridge on the UART, through a level shifter |
 | PWM buffer | 74HCT125 | **74AHC157** (on hand), forced low during reset |
@@ -36,7 +36,7 @@
 The **class board** keeps the AT89C51RC2 at 11.0592 MHz, its 74LS373 latch and ATF16V8B decoder. The external bus is used **only for memory-mapped I/O** (no external memory; the NVSRAM goes back to the course). Main-side circuits add **two motorized faders**, the **Lab 4 16x4 character LCD**, **eight panel button inputs** (five navigation, one per fader, one spare), an expression pedal input, a preset EEPROM and the **KB2040 USB-MIDI bridge** to Reaper. **Daughter boards** (pot board, button board) hang on an I2C bus over RJ45 cables, in any order; each has a DIP switch for its I2C address and the master finds them by scanning.
 
 ```
-  CLASS BOARD (master, existing)                  |  MAIN-SIDE CIRCUITS (location OPEN #2)
+  CLASS BOARD (master, existing)                  |  MAIN-SIDE CIRCUITS (panel / bottom split: section 3.13)
                                                   |
   J1 9 V jack -> D1-D4 -> SW1 -> U2 7805 -> +5 V =====> +5 V / GND: logic, LCD, daughters
                                                   |    VM motor rail: OPEN #1 (PTC, TVS, 470 uF)
@@ -91,6 +91,7 @@ The **class board** keeps the AT89C51RC2 at 11.0592 MHz, its 74LS373 latch and A
 | Panel buttons | 5 navigation + 2 per-fader on one 74HCT244; its eighth input carries `TOUCH1` | Works if I2C is hung |
 | Daughter boards | Passive pot and button boards; DIP-switch I2C addresses; auto-detect by ACK | Per team |
 | Daughter bus | RJ45 breakouts and Cat 5e patch cables (section 3.10) | Decided 2026-10-24 |
+| Build split | Two levels: **panel** (acrylic + D-pad board + fader strip: buttons, '244, MCP3008, touch sensors, LCD, faders) and **bottom** (class board + perf: everything else). Joined by J20 (12-pin bus), J21 (10-pin I/O) and J22 (motor) | Per team, 2026-10-24: fewest level-to-level wires; two cables are easy to unplug and leave spares (section 3.13) |
 | Crystal | Class board 11.0592 MHz, X1 mode | All Lab 1-4 code; X2 breaks LCD timing (section 3.12) |
 
 ### 1.2 Feasibility results that constrain the hardware
@@ -131,7 +132,7 @@ Reference: [`ECEN5613_Dev_Board.kicad_sch`](reference/class_board/kicad_schemati
 
 ## 3. Main-side circuits
 
-Where these are built (perf expansion board cabled to the class board, the class board's spare area, or a mix) is `OPEN` #2. The nets below do not depend on it.
+Which level each part is built on, and the cables between levels, are in section 3.13.
 
 ### 3.1 Parts
 
@@ -148,7 +149,7 @@ Where these are built (perf expansion board cabled to the class board, the class
 | A3 | SparkFun bidirectional logic level converter (BSS138, on hand) | module | 5 V <-> 3.3 V for the KB2040 UART | P1 |
 | LCD1 | Samsung 16x4 LCD (Lab 4 kit) | 14-pin single row, kit socket strip | Display | P1 |
 | FDR1, FDR2 | Terwin SM100 motor fader | wired | Faders (FDR2 in P2) | P1 / P2 |
-| A4, A5 | AT42QT1010 touch sensor on a breakout (for example the SparkFun AT42QT1010 capacitive touch breakout; part choice can change) | SOT-23-6 on breakout | Fader 1 / fader 2 touch | P1 / P2 |
+| A4, A5 | Microchip AT42QT1010-TSHR touch sensor IC on a SOT-23-6 to DIP adapter (on hand), with its Cs, Rs, bypass and filter parts on the fader strip | SOT-23-6 on adapter | Fader 1 / fader 2 touch | P1 / P2 |
 
 All DIP ICs go in sockets (kit wire-wrap sockets or spares). Spares to keep on hand: ATF16V8B (NRND), MCP3008, '273, '244 (the order includes one spare of each). The kit 74LS374 is a fallback for U14 with weaker reset behavior ([Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) section 2).
 
@@ -230,12 +231,14 @@ See **Appendix A** (every IC and module, pin by pin). It is the authoritative ne
 - **Motor voltage**: TB6612 `VM` 4.5-13.5 V, about 0.5 V drop; the motor is rated 10 V, so from a 12 V rail cap the PWM duty at about 85 % in firmware.
 - **Filtering**: `VREF_F` = +5 V through 100 ohm, 10 uF + 0.1 uF to AGND; MCP3008 `VREF` and `VDD` from it; AGND joins GND at one point near U11.
 - **Motor supply** `VM`: see section 3.9. 470 uF bulk near A1, 0.1 uF at A1 `VM`, PTC fuse and TVS at the supply entry.
-- **Touch (hardware)**: the SM100's T pin connects to the metal lever and knob (bench check 2026-10-24: under 10 ohm). Each fader's T pin is the electrode of its own AT42QT1010 (A4 for FDR1, A5 for FDR2). Per sensor (`VERIFY:` every value and pin against the Microchip AT42QT1010 datasheet and the breakout's schematic):
-  - `VDD` = +5 V with 100 nF, `VSS` = GND.
-  - `SNSK` -> series resistor (about 4.7 k) -> fader T pin (`FDRn_T`); sample capacitor Cs between `SNS` and `SNSK` sets the sensitivity (larger = more sensitive; start from the breakout's value and tune on the bench). Remove or cut the breakout's on-board electrode pad if it has one.
-  - `OUT` = `TOUCH1` / `TOUCH2`: push-pull, **high while touched**. `TOUCH1` -> U16 2A4 (D7 at 0xF800, so it reads 1 when touched, the opposite of the buttons); `TOUCH2` -> P1.5 (write 1 to the P1.5 latch so the pin is an input).
-  - `MODE`/`SYNC` pin per the datasheet's fast-response mode.
-  - Behavior to plan for in firmware: the chip self-calibrates at power-up (do not touch the knobs while powering on) and has a maximum on-duration (about 60 s, `VERIFY:`) after which it recalibrates, so a fader held longer than that reads as released.
+- **Touch (hardware)**: the SM100's T pin connects to the metal lever and knob (bench check 2026-10-24: under 10 ohm), so the T pin itself is the electrode. Each fader gets a bare AT42QT1010 (A4 for FDR1, A5 for FDR2) on the fader strip, close to the fader's T pin. Values from the Microchip AT42QT1010 datasheet (DS40001946A):
+  - SOT-23-6 pins: 1 `OUT`, 2 `VSS`, 3 `SNSK`, 4 `SNS`, 5 `VDD`, 6 `SYNC/MODE`.
+  - `VDD` = +5 V through a small RC filter (100 ohm, then 10 uF + 100 nF to GND at the chip): the chip wants supply ripple within +-20 mV and the panel's +5 V comes over J21. The 100 nF must sit right at pins 5 and 2.
+  - `SNSK` (pin 3) -> Rs (series resistor for ESD/EMC, start at 4.7 k) -> fader T pin (`FDRn_T`). Sample capacitor **Cs between `SNS` (pin 4) and `SNSK` (pin 3)**: 2-50 nF, a stable X7R (5 %) or PPS film type; start at 10 nF and tune (larger = more sensitive, slower). Keep Cs and Rs at the chip and the T wire short and away from GND and other wires: the load the chip can drive (Cx) is 2-50 pF, and the lever, track and wire all add to it.
+  - `SYNC/MODE` (pin 6) -> **GND (low-power mode)**. The maximum on-duration (about 60 s, after which a held touch reads released and the chip recalibrates) is quoted for low-power mode and counts measurement bursts. In fast mode (pin 6 high) bursts are about 20 times more frequent, so a held fader would drop out after a few seconds (estimate). Low-power mode still answers within about 100 ms. `VERIFY:` the hold time on the bench.
+  - `OUT` (pin 1) = `TOUCH1` / `TOUCH2`: push-pull, **high while touched**, 2 mA. `TOUCH1` -> U16 2A4 (D7 at 0xF800, so it reads 1 when touched, the opposite of the buttons); `TOUCH2` -> P1.5 (write 1 to the P1.5 latch so the pin is an input).
+  - **HeartBeat**: before every burst `OUT` floats for about 15 us. With a pull-up that shows as a false "touched" pulse, so `TOUCH1` has **no** pull-up, and each `OUT` gets **10 nF to GND** to filter the pulse (P1.5's weak internal pull-up cannot charge it in 15 us). Firmware also requires 2-3 matching reads before changing touch state.
+  - Power-up: the chip self-calibrates for about 100 ms after power-on (ignore `OUT`, and keep hands off the knobs).
   - Keep each T wire short and away from the motor wires; motor PWM can couple into the electrode. If touch chatters while the motor runs, firmware can ignore touch changes during motor drive, or Cs can be reduced.
 - **Expression pedal** (MCP3008 CH3, P2): 1/4" TRS jack `J13` (part `VERIFY:`, not in the order). Brands disagree on the wiring, so tip and ring each go to a 3-pin header with a jumper (`JP_TIP`, `JP_RING`) selecting wiper or reference. Default: tip -> wiper (via the same RC), ring -> `VREF_F` **through 100 ohm** (a short while plugging in cannot pull down the fader reference), sleeve -> AGND.
 
@@ -270,7 +273,7 @@ Seven 6 mm tactile switches (spares on hand) plus one spare input. Each switch g
 | D4 | `BTN_RIGHT` | D-pad right | below the LCD |
 | D5 | `BTN_F1` | fader 1 | next to fader 1 |
 | D6 | `BTN_F2` | fader 2 | next to fader 2 |
-| D7 | `TOUCH1` | none: A4 OUT (fader 1 touch, **1 = touched**) | was `BTN_F3` in Rev 12; keep its 10 k pull-up (harmless with a push-pull driver) |
+| D7 | `TOUCH1` | none: A4 OUT (fader 1 touch, **1 = touched**) | was `BTN_F3` in Rev 12; **no pull-up** (HeartBeat pulses), 10 nF to GND instead (section 3.5) |
 
 A bit reads 0 when pressed. U16 is read at 0xF800; `/1OE` and `/2OE` are tied together to `BTN_OE_n`. Firmware polls at about 100 Hz with a 20 ms debounce.
 
@@ -336,7 +339,11 @@ Default if the team delegates: A.
 | J7 | TTL debug header 1x6, FTDI order (section 3.8) |
 | J10 | LCD connection, kit 14-contact socket strip |
 | J11 | RJ45 bus breakout (section 3.10) |
-| J13 | TRS expression pedal jack (P2) |
+| J13 | TRS expression pedal jack (P2), wired to the D-pad board (MCP3008 CH3) |
+| J20 | Panel bus cable, 2x6 shrouded keyed IDC, 12-pin (section 3.13) |
+| J21 | Panel I/O cable, 2x5 shrouded keyed IDC, 10-pin (section 3.13) |
+| J22 | Motor cable, 4-pin (two twisted pairs) (section 3.13) |
+| J23 | Fader strip to D-pad board jumper, 6-pin, panel level only (section 3.13) |
 | FDR1, FDR2 | Fader pot (3 pins), touch (T, to A4/A5) and motor (A, B) wiring |
 | JP_RX (1x3), JP_VM, JP_BUS, JP_TIP, JP_RING | Jumpers as above |
 | TP | `LCD_E`, `MOTDIR_CLK`, `BTN_OE_N`, `VDP_WR_N`, `ADC_CS_N`, `ADC_SCK`, `ADC_MOSI`, `ADC_MISO`, `SDA`, `SCL`, `BUS_INT_N`, `PWM0`, `PWM1`, `PWM0_EN`, `PWM1_EN`, `MIDI_TX`, `MIDI_RX`, `RST`, `RST_N`, `TOUCH1`, `TOUCH2`, `FDR1_T`, `FDR2_T`, `VM`, +5 V, GND x2 |
@@ -353,6 +360,51 @@ The class board's 11.0592 MHz crystal stays; all Lab 1-4 code uses it.
 | /RD, /WR pulse = LCD E high (6 TCLCL - 100 ns) | about 440 ns | about 275 ns (minimum 230 ns: passes) |
 
 **Why not X2 mode**: X2 halves every bus strobe as well as the peripheral clocks, so the LCD E pulse would drop to about 170 ns, below the HD44780 minimum. The main PWM-noise fix is in firmware: drive a motor only while its fader is moving, and set PWM to 0 at the target.
+
+### 3.13 Physical build: two levels and the cables between them
+
+The build has two levels. Parts that serve the panel's own controls go on the panel, so only the bus, the ADC link and the motor leads cross between levels. Each level-to-level connection unplugs, for taking the panel off.
+
+| Level | Board | Parts |
+|---|---|---|
+| **Panel** (acrylic and what hangs under it) | Acrylic | FDR1, FDR2, LCD1 and its contrast pot ([hardware/panel/](hardware/panel/)) |
+| | **D-pad board** (7 x 9 cm perf, 0.4 in standoffs) | 5 D-pad switches, **U16 74HCT244** + the 8 button/touch pull-ups, **U11 MCP3008** + `VREF_F` filter and the wiper RC networks, J13 pedal wiring, J20, J21, J23 |
+| | **Fader strip** (2 x 8 cm perf, 0.6 in standoffs) | `BTN_F1`, `BTN_F2` switches, **A4, A5 touch sensors** (the T pins are at the bottom end of each fader, next to the strip, so the electrode wires are about 2 cm), J23 |
+| **Bottom** | Class board + perf as needed | U1, U3, U7, U6, power, Q2, U14 '273, U9 74AHC157, A1 TB6612 and the motor supply (PTC, TVS, 470 uF), A2 KB2040 + A3, U10 24C16 + I2C pull-ups, J11 RJ45, J7, `JP_RX`, J22 |
+
+**J20, panel bus (2x6, 12 conductors).** Conductor order on the ribbon = pin order; `LCD_E` sits next to a GND.
+
+| Pin | Signal | Pin | Signal |
+|---|---|---|---|
+| 1 | `AD0` | 2 | `AD1` |
+| 3 | `AD2` | 4 | `AD3` |
+| 5 | `AD4` | 6 | `AD5` |
+| 7 | `AD6` | 8 | `AD7` |
+| 9 | `LCD_RS` | 10 | `LCD_RW` |
+| 11 | `LCD_E` | 12 | GND |
+
+**J21, panel I/O (2x5, 10 conductors).** `ADC_SCK` sits between GNDs.
+
+| Pin | Signal | Pin | Signal |
+|---|---|---|---|
+| 1 | +5 V | 2 | GND |
+| 3 | `BTN_OE_N` | 4 | `TOUCH2` (-> P1.5) |
+| 5 | `ADC_SCK` | 6 | GND |
+| 7 | `ADC_MOSI` | 8 | `ADC_MISO` |
+| 9 | `ADC_CS_N` | 10 | spare |
+
+**J22, motor (4 conductors, two twisted pairs, routed away from J20/J21):** 1 `M0_A`, 2 `M0_B`, 3 `M1_A`, 4 `M1_B`. Use wire rated for the stall current (about 0.8 A per motor, MEASURE).
+
+**J23, fader strip to D-pad board (panel level only, 6 conductors):** 1 +5 V, 2 GND, 3 `BTN_F1`, 4 `BTN_F2`, 5 `TOUCH1`, 6 `TOUCH2` (continues to J21 pin 4).
+
+**Wires that stay on the panel:** each fader's pot (track ends to `VREF_F` and AGND, wiper to its RC on the D-pad board), the LCD (from J20/J21 on the D-pad board), the pedal jack, and J23.
+
+Notes:
+- **Count:** 22 conductors in two keyed cables of different sizes, so they cannot be swapped: 17 signals, +5 V, 3 GND, 1 spare (J21 pin 10). Without the split it would be about 34 loose wires.
+- **Length:** J20 about 9 in, J21 about 8 in, home-made from 12-conductor ribbon and polarized IDC sockets (keep both under about 30 cm) (parts: [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) section 3e). Each fast signal has a GND beside it, and the 8051 drives the bus strongly during bus cycles; the LCD and the '244 are the only loads at the far end.
+- **Power:** the panel draws about 10 mA at +5 V (LCD, '244, MCP3008, two touch sensors); one +5 V conductor is enough.
+- **Height:** the D-pad board has about 10 mm between its top and the acrylic. Keep socketed DIPs (about 7-8 mm) away from the plunger shoulders or on the underside, and use right-angle or bottom-side headers for J20/J21/J23. Under the board there is about 2 mm above the class board's NVSRAM socket area; removing U4 and its socket frees that space.
+- **Grounds:** AGND joins GND at one point at U11 on the D-pad board; the motor return stays on the bottom level (J22 carries no ground).
 
 ---
 
@@ -445,7 +497,7 @@ Kit mapping, the Digi-Key order and alternates: [hardware/Perfboard_Order_Notes.
 | # | Item | Needed for | Default if the team delegates |
 |---|---|---|---|
 | 1 | Motor rail supply: the class board has a 9 V / 500 mA input (section 3.9) | P1 motor tests | Option A: separate 12 V supply for `VM` only |
-| 2 | Where the main-side circuits are built: perf expansion board(s) cabled to the class board, the class board's spare area, or a mix; and the cable/connector between them | Wiring, schematic sheet split | One perf expansion board joined by a ribbon or header strip carrying the bus and port signals |
+| 2 | ~~Where the main-side circuits are built~~ **Closed Rev 13.2**: two levels, panel and bottom, joined by J20 (12-pin), J21 (10-pin) and J22 (motor); section 3.13 | | |
 | 3 | Pot-board ADC part (section 4.2) | P3 order | ADS7828 on a TSSOP-16 DIP adapter |
 | 4 | KB2040 link: 31,250-baud MIDI stream or 115,200-baud USB-MIDI packets | Firmware on both ends | 31,250 (the 8051 code stays real MIDI and the DB9 fallback is unchanged) |
 | 5 | ~~Hardware SPI for the MCP3008~~ **Closed Rev 13.1**: P1.5 is now `TOUCH2`; the MCP3008 stays bit-banged | | |
@@ -461,7 +513,7 @@ Kit mapping, the Digi-Key order and alternates: [hardware/Perfboard_Order_Notes.
 6. **SPLD** edits can break the Lab 3 decode; keep `lab3.pld` and its `.jed`.
 7. **Bit-banged SPI + I2C + MIDI** loop budget: measure first.
 8. **Single UART** shared by MIDI and the PC bootloader (`JP_RX`).
-9. **Hand wiring** of the 8-bit bus to several ICs: continuity-check every net against Appendix A; keep bus wires short.
+9. **Hand wiring** of the 8-bit bus to several ICs and across J20: continuity-check every net against Appendix A and section 3.13; keep J20/J21 at 30 cm or less.
 10. **DIP-switch duplicates** on daughters are undetectable.
 11. **Touch sensing**: motor PWM coupling into the T electrode, power-up calibration with a hand on a knob, and the sensor's maximum on-duration recalibration.
 12. **PWM noise**: 10.8 kHz is audible and the course says projects must not make significant noise. Drive motors only while moving.
@@ -535,7 +587,7 @@ See section 3.2 (complete).
 | 15 | 2A3 | `BTN_F2` | | 5 | 2Y3 | AD6 |
 | 17 | 2A4 | `TOUCH1` (A4 OUT) | | 3 | 2Y4 | AD7 |
 
-Pins 10 / 20: GND / VCC. Each `BTN_*` net and `TOUCH1`: 10 k to +5 V.
+Pins 10 / 20: GND / VCC. Each `BTN_*` net: 10 k to +5 V. `TOUCH1`: no pull-up, 10 nF to GND.
 
 ### A.6 Q2 2N2222 reset inverter
 
@@ -628,16 +680,16 @@ Unchanged except pin 12: R1OUT goes to `JP_RX` pin 3 instead of straight to P3.0
 
 Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5/6/8 GND. Pull-ups (5.1 k `SDA`/`SCL`, 10 k `BUS_INT_N`) on the master side only.
 
-### A.15 A4, A5 AT42QT1010 touch sensors (pin names; `VERIFY:` against the datasheet and breakout)
+### A.15 A4, A5 AT42QT1010-TSHR touch sensors (SOT-23-6 pin numbers from the Microchip datasheet DS40001946A; adapter pin mapping `VERIFY:` on the adapter)
 
 | Pin | A4 (fader 1) | A5 (fader 2) |
 |---|---|---|
-| `VDD` | +5 V, 100 nF | +5 V, 100 nF |
-| `VSS` | GND | GND |
-| `SNSK` | via about 4.7 k to `FDR1_T` (FDR1 pin T) | via about 4.7 k to `FDR2_T` (FDR2 pin T) |
-| `SNS` | Cs to `SNSK` | Cs to `SNSK` |
-| `OUT` | `TOUCH1` -> U16.17 | `TOUCH2` -> U1.6 (P1.5) |
-| `MODE`/`SYNC` | per datasheet (fast mode) | same |
+| 5 `VDD` | +5 V via 100 ohm; 10 uF + 100 nF to GND at the chip | same |
+| 2 `VSS` | GND | GND |
+| 3 `SNSK` | Rs 4.7 k to `FDR1_T` (FDR1 pin T); Cs to pin 4 | Rs 4.7 k to `FDR2_T` (FDR2 pin T); Cs to pin 4 |
+| 4 `SNS` | Cs (10 nF X7R, tune 2-50 nF) to pin 3 | same |
+| 1 `OUT` | `TOUCH1` -> J23 pin 5 -> U16.17; 10 nF to GND | `TOUCH2` -> J23 pin 6 -> J21 pin 4 -> U1.6 (P1.5); 10 nF to GND |
+| 6 `SYNC/MODE` | GND (low-power mode, about 60 s hold limit) | GND |
 
 ### A.16 Daughter-board nets
 
@@ -665,3 +717,5 @@ Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5
 | 12 | LCD: the Lab 4 kit module is a Samsung 16x4 (87 x 60, 14-pin single row, no backlight; photo-measured), the handout names an Optrex DMC-20434 20x4 with the same pinout and SED1278F controller. Pinout, contrast and timing from the Optrex/Epson specs; `JP_BL` and its resistor removed; firmware geometry constants for 16x4 and 20x4. (2026-10-20: ESD_Main KiCad 10 PCB drafted from this revision; still in the git history at commit `735803c`) |
 | 13 | **2026-10-24, scope change: class board as master, hand-built perf boards, no custom PCB.** Two faders (Terwin SM100, not Alps) on one TB6612FNG breakout; PWM2, U13, FDR3 and `BTN_F3` dropped (P1.5 spare, D7 = `BTN_SPARE`, MCP3008 CH2 unused). Perf-board decisions of 10/24 folded in: KB2040 + BSS138 level shifter replace DIN-5/6N138/mio and J12; 74AHC157 (with `/G` = `RST`) replaces the 74HCT125; 2N2222 replaces the 74HC14; kit 24C16 replaces the 24LC256 (WP tied low); RJ45 bus replaces the IDC ribbon; 5.1 k I2C pull-ups; `JP_RX` becomes 1x3 (KB2040 / PC); status LED uses the class board's Q1 driver; `STBY` on latch Q6. Removed: custom-PCB brief (old section 0), footprints, JLC/stencil/0805 rules, 12 V barrel/P-FET/R-78E, socketed crystal. New `OPEN` items: motor supply vs the 9 V class input (#1), build location (#2), pot-board ADC (#3, PCF8591P vs ADS7828), KB2040 link baud (#4), hardware SPI (#5), mechanical layout (#6). Closed: expression pedal kept in P2 |
 | 13.1 | 2026-10-24: hardware fader touch. The SM100's T pin connects to the knob (< 10 ohm measured), so each fader gets an AT42QT1010 touch sensor (A4, A5) with T as the electrode. `TOUCH1` takes U16 D7 (was `BTN_SPARE`), `TOUCH2` takes P1.5 (was spare), so all 14 port pins are used and `OPEN` #5 (hardware SPI) is closed. New Appendix A.15; daughter-board nets renumbered A.16 |
+| 13.2 | 2026-10-24: physical build in two levels (section 3.13). Panel: D-pad board with U16 '244 and U11 MCP3008, fader strip with F1/F2 and the A4/A5 touch sensors. Bottom: class board and everything else. Cables J20 (2x6 bus), J21 (2x5 I/O, 1 spare), J22 (motor), panel jumper J23. Closes `OPEN` #2 |
+| 13.3 | 2026-10-24: touch sensors are bare AT42QT1010-TSHR chips on SOT-23-6 adapters (the SparkFun breakout has its own touch pad). Datasheet pinout and circuit in section 3.5 and A.15: `SYNC/MODE` to GND (low-power mode keeps the about 60 s hold limit), no pull-up on `TOUCH1`, 10 nF HeartBeat filter on each `OUT`, RC-filtered `VDD` |

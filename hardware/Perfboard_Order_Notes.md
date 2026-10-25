@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Date | 2026-10-24 (trimmed to a parts record on 2026-10-24 when its design content moved into [Hardware_Map](../Hardware_Map.md) Rev 13) |
-| Upload file | [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) (8 lines). Cart export from 2026-10-24, **not yet ordered**: [digikey_cart_2026-10-24.csv](digikey_cart_2026-10-24.csv) (7 lines, see section 4) |
+| Upload file | [digikey_phase1_2_order.csv](digikey_phase1_2_order.csv) (14 lines; touch-sensor chips and panel cable parts added 2026-10-24). The older cart export, **not yet ordered and now out of date**: [digikey_cart_2026-10-24.csv](digikey_cart_2026-10-24.csv) (7 lines, see section 4) |
 | Spec this derives from | [Hardware_Map](../Hardware_Map.md) Rev 13 (circuits, pin map, netlist). Design decisions live there, not here |
 | Kit list | [f26partskit.pdf](../reference/f26partskit.pdf) (Fall 2026 parts kit, 8/24/2026) |
 | Status | **Not yet ordered.** Digi-Key stock comes from cached web pages, not live; check the cart before paying. `VERIFY:` = check on the live site or datasheet |
@@ -68,19 +68,42 @@ Sockets and tactile buttons are **not** ordered: you have spares. Count what you
 | 10 uF x2, 470 uF x2 | `VREF_F` filter, motor bulk |
 | PTC fuse, P6KE15A TVS | Motor rail protection (section 4) |
 | 1x40 male header | Wiring |
+| Microchip AT42QT1010-TSHR x3 (Digi-Key AT42QT1010-TSHRCT-ND) | A4, A5 fader touch sensors (+1 spare), on SOT23-6 to DIP adapters already on hand. Bare chip, because the SparkFun 12041 breakout has its own touch pad. Cs (10 nF X7R, plus 4.7 and 22 nF to tune), 4.7 k Rs, 100 ohm + 10 uF supply filter and 10 nF output filter come from the lab parts; Hardware_Map section 3.5 |
+| Molex 70246-1201 x2, 70246-1001 x2 | J20 (12-pin) and J21 (10-pin) shrouded keyed headers: one on the D-pad board, one on the bottom level (no spares) |
+| Adam Tech FCS-12-SG x2, On Shore 101-106 x2, 3M 3365/12 ribbon x3 ft | Home-made J20 and J21 cables, cut to length (section 3e) |
 
 Removed from the first version of the order because the kit or lab has them: 24LC256, 74HC04, all resistors, ceramic caps, trimmer, LEDs, SIP, 1x16 female header, and the 5 V module.
 
-**Still to source (not in this order):** 2 AT42QT1010 touch-sensor breakouts (for example the SparkFun AT42QT1010 capacitive touch breakout, +1 spare; fader touch, Hardware_Map section 3.5); motor supply (Hardware_Map `OPEN` #1); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
+**Still to source (not in this order):** motor supply (Hardware_Map `OPEN` #1); pot-board ADC (`OPEN` #3; the PCF8591P listed here before is discontinued); 4-position DIP switches; tactiles for the button board; a 1/4" TRS jack for the pedal; a second fader if only one is on hand.
+
+## 3e. Panel cables J20 and J21 (Hardware_Map section 3.13)
+
+Home-made cables (team decision 2026-10-24): about half the cost of ready-made Samtec cables (roughly $5-8 against $12-16) and any length.
+
+| Item | Part | Qty | Notes |
+|---|---|---|---|
+| 12-pin socket (J20) | Adam Tech FCS-12-SG: 2x6, 2.54 mm, IDC, **polarizing key**, gold | 2 | Digi-Key 2026-10-24: about 2,100 in stock, sold singly. (The Assmann AWP 12-7540-T is not sold in single quantities; the AWP 12-8540-T has no key.) |
+| 10-pin socket (J21) | On Shore Technology 101-106: 2x5, 2.54 mm, IDC, polarizing key, gold | 2 | Listed on Digi-Key 2026-10-24; `VERIFY:` single-quantity stock. Alternates: Adam Tech FCS-10-SG (same family as the 12-pin, not confirmed) or 3M 89110-0101 (not the -0101HA) |
+| Ribbon | 3M 3365/12, 12 conductors, 0.050 in pitch, 28 AWG (Digi-Key 3M157990-100-ND, ordered by the foot) | 3 ft | One ribbon for both cables: for J21 peel 2 conductors off the edge away from the red stripe |
+| 12-pin header | Molex 70246-1201 (Digi-Key 23-0702461201-ND): vertical, shrouded, keying slot | 2 | Unchanged |
+| 10-pin header | Molex 70246-1001: same family | 2 | Unchanged; `VERIFY:` Digi-Key stock. Alternates: 3M N2510-6002RB (vertical) or 3M D2510-5002-AR (Digi-Key MHE10E-ND, right angle) |
+
+Making the cables:
+- **Length:** cut J20 at about 9 in and J21 at about 8 in (team, 2026-10-24), plus about 1/2 in to trim square.
+- **Pin 1:** the red stripe is conductor 1. Put it at the socket's pin-1 mark (triangle) at **both** ends, with both sockets facing the same way, so the cable runs pin 1 to pin 1.
+- **Pressing:** press each socket squarely in a bench vise (or between two flat boards in a clamp) until the cover latches, then fold the ribbon over and snap on the strain relief if the socket has one.
+- **Test** every conductor end to end with a continuity meter, and check that neighbors are not shorted, before plugging in.
+- **Height on the D-pad board:** a vertical shrouded header plus the socket is taller than the 10 mm between the D-pad board and the acrylic. Mount J20/J21 on the underside of the D-pad board at an edge with nothing tall below it, or use a right-angle header pointing off the board edge.
+- **J22 motor cable and J23 panel jumper:** not in the order; use screw terminals or pin headers and wire already on hand.
 
 ## 4. Before you click buy
 
 - **PTC fuse**: the cart export has the **RHEF200** (2 A hold); the upload CSV has the **RHEF300HF-ND** (3 A hold), chosen when there were three motors (about 2.4 A start). With **two** motors (about 1.6 A start, MEASURE) the RHEF200 is enough and trips sooner on a fault; the RHEF300 also works. Pick one and make the cart and the CSV agree.
-- The cart export has 7 lines; the CSV's 8th line (1x40 header, PRPC040SAAN-RC) is missing from the cart. Add it or drop it.
+- The cart export has only the first 7 lines; upload the CSV again (14 lines) rather than reusing the cart.
 - The TB6612 runs the motors, so the motor rail must stay at or below 13.5 V (the P6KE15A starts conducting around 14-16 V). Keep PWM duty capped for the 10 V motor.
 - Check each line shows **In Stock**; the upload tool may offer substitutes. If a line fails to match, search the manufacturer part number.
-- Part numbers I could not confirm: `P6KE15A`, `ECA-1EM100`, `EEU-FR1E471` (any 25 V parts of those values work).
-- Quantities include one spare of each IC. Shipping and tariffs are not included.
+- Part numbers I could not confirm: `EEU-FR1E471` (any 25 V parts of those values work). The 10 uF is now the Rubycon 25TWL10MEFC5X11 (Digi-Key 25TWL10MEFC5X11-ND); the Panasonic ECA-1EM100 was out of stock. The TVS uses Digi-Key 4878-P6KE15ACT-ND (P6KE15A).
+- Quantities include one spare of each IC; the panel cable sockets and headers have no spares (the 3 ft of ribbon leaves enough to remake a cable). Shipping and tariffs are not included.
 
 ## 5. Alternates (not in the upload)
 

@@ -2,8 +2,14 @@ Quantity,Digi-Key Part Number,Manufacturer Part Number,Manufacturer,Customer Ref
 2,MCP3008-I/P-ND,MCP3008-I/P,Microchip Technology,U11 fader ADC (+1 spare)
 2,296-1610-5-ND,SN74HCT244N,Texas Instruments,U16 panel button buffer (+1 spare)
 2,296-2110-5-ND,CD74HCT273E,Texas Instruments,U14 direction latch with /MR (+1 spare); kit 74LS374 is a lower-cost option
-2,,ECA-1EM100,Panasonic,10 uF 25 V (ADC reference filter; kit 10 uF are used by the class board)
+2,25TWL10MEFC5X11-ND,25TWL10MEFC5X11,Rubycon,10 uF 25 V (ADC reference filter; kit 10 uF are used by the class board); replaces out-of-stock ECA-1EM100
 2,,EEU-FR1E471,Panasonic,470 uF 25 V motor rail bulk
 1,RHEF300HF-ND,,Littelfuse,PTC fuse for motor rail (3 A hold; three motors start at about 2.4 A)
-1,,P6KE15A,Littelfuse,TVS for motor rail
+1,4878-P6KE15ACT-ND,P6KE15A,,TVS for motor rail
 1,,PRPC040SAAN-RC,Sullins Connector Solutions,1x40 male header (insurance; kit strips may run out)
+3,AT42QT1010-TSHRCT-ND,AT42QT1010-TSHR,Microchip Technology,A4/A5 fader touch sensor IC SOT-23-6 (+1 spare)
+2,23-0702461201-ND,70246-1201,Molex,J20 12-pin shrouded keyed header (panel end + bottom end)
+2,,70246-1001,Molex,J21 10-pin shrouded keyed header (panel end + bottom end); VERIFY Digi-Key stock
+2,,FCS-12-SG,Adam Tech,J20 12-pin polarized IDC ribbon socket gold (one per cable end)
+2,,101-106,On Shore Technology,J21 10-pin polarized IDC ribbon socket gold (one per cable end)
+3,3M157990-100-ND,3365/12,3M,12-conductor 0.050 in ribbon; quantity is feet; J21 uses it with 2 conductors peeled off
