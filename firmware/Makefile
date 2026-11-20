@@ -31,9 +31,13 @@ build/main.hex: build/main.ihx
 	packihx $< > $@
 
 build:
-	mkdir -p build
+	mkdir build
 
 clean:
+ifeq ($(OS),Windows_NT)
+	if exist build rmdir /s /q build
+else
 	rm -rf build
+endif
 
 .PHONY: all clean
