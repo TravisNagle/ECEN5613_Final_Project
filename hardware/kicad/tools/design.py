@@ -203,7 +203,6 @@ part("U14", "74xx:74HCT273", "CD74HCT273E", "class_power",
       "16": "MOT_STBY", "10": "GND", "20": "+5V"}, mpn="CD74HCT273E",
      note="motor direction latch @0xF000; Q4, Q5, Q7 spare")
 bypass("C21", "class_power")
-R("R8", "10k", "MOT_STBY", "GND", "class_power", note="STBY low when the latch is absent")
 part("Q2", "Transistor_BJT:PN2222A", "2N2222", "class_power", {"1": "GND", "2": "Q2_B", "3": "RST_N"},
      note="RST -> RST_N inverter (kit 2N2222)")
 R("R9", "10k", "RST", "Q2_B", "class_power")

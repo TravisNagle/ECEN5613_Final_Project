@@ -5,7 +5,7 @@
 | File name | `Hardware_Map.md` |
 | Course | ECEN 5613 Embedded System Design, Fall 2026, Final Project |
 | Team | Nathan Cohen (analog and control), Travis Nagle (MIDI and interface) |
-| Document revision | **Rev 13.6, 2026-11-20: button board expander is a PCF8574A, address 0x38 + n (sections 4.3, 4.4).** Rev 13.5, 2026-10-25: KiCad schematic added; SW1 correction (section 3.9).** Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
+| Document revision | **Rev 13.8, 2026-11-21: A1 breakout details, no STBY pull-down (A.4, A.8); Rev 13.7: SW1 rated 3 A (section 3.9). Rev 13.6, 2026-11-20: button board expander is a PCF8574A, address 0x38 + n (sections 4.3, 4.4).** Rev 13.5, 2026-10-25: KiCad schematic added; SW1 correction (section 3.9).** Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
 | Status | **Build in progress (2026-11-21): panel built, class-board Lab 4 circuits done, motor drivers not wired; see the README build-status table.** `VERIFY:` = datasheet check needed before it is trusted. `(MEASURE)` = bench value to fill in. `OPEN` = decision not yet made, see section 9 |
 | Builds on | [class BOM](reference/class_board/kicad_schematic/ECEN5613_Dev_Board_BOM.csv), [Lab 3 memory map](reference/class_board/memory_map_and_xram.md), [lab3.pld](reference/class_board/spld/lab3.pld), PDR [F26_PDR_TravisNagle_NathanCohen.pptx](docs/F26_PDR_TravisNagle_NathanCohen.pptx), spec [f26finalproject_8-24-2026.pdf](docs/f26finalproject_8-24-2026.pdf), fader [datasheet](reference/motor_slider_datasheet.pdf), parts and order record [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed/modified by the students. The course requires AI use to be fully documented in the final report. |
@@ -227,7 +227,7 @@ See **Appendix A** (every IC and module, pin by pin). It is the authoritative ne
 - **Fader**: Terwin SM100 ([datasheet](reference/motor_slider_datasheet.pdf)): 100 mm travel, 10 k linear, residual <= 500 ohm (calibrate min/max in firmware), motor rated **10 V DC**, pot pins 1-2-3 (servo track), touch-sense pin T, motor pins A/B. `VERIFY:` which pot pin is the wiper (the drawing suggests pin 2) with an ohmmeter. Motor current is **not** in the datasheet; the PDR design doc gave about 800 mA starting current for a similar part: **(MEASURE)** stall/start current on the bench.
 - **Per channel**: U9 output -> TB6612 `PWMx`; latch outputs -> `xIN1/xIN2`; `xO1/xO2` -> motor A/B with 100 nF across the motor pins; fader wiper -> RC (1 k series, 100 nF to AGND, **1 M** to AGND so an unconnected input does not float) -> MCP3008 channel; track ends to `VREF_F` and AGND; touch pin T -> test point `TOUCHn`.
 - **TB6612 logic** (`VERIFY:` against the Toshiba datasheet and the breakout's schematic): `IN1/IN2` = 10 or 01 with `PWM` high drives; `PWM` low = short brake; `IN1 = IN2 = 0` = stop (outputs off, coast); `IN1 = IN2 = 1` = short brake; `STBY` low = everything off. Between direction changes write `11` (brake), then the new direction.
-- **Safe state at reset**: three independent locks. U9 `/G` = `RST`, so both `PWMx_EN` are forced low; Q2 holds U14 `/MR` low, so all latch outputs (including `STBY` on Q6) are 0; `STBY` also has a 10 k pull-down. Firmware writes the latch and starts PWM only after init.
+- **Safe state at reset**: three independent locks. U9 `/G` = `RST`, so both `PWMx_EN` are forced low; Q2 holds U14 `/MR` low, so all latch outputs (including `STBY` on Q6) are 0; the breakout pulls `STBY` up to `VCC` through 10 k, so Q6 is what holds it low (an external pull-down would only divide it to about 2.5 V, which reads as high). During the first instant of power-up `STBY` can float high, but the `xIN` pins are low (internal pull-downs) and the PWM enables are held low, so the outputs stay off. Firmware writes the latch and starts PWM only after init.
 - **Motor voltage**: TB6612 `VM` 4.5-13.5 V, about 0.5 V drop. From the 9 V adapter `VM` is about 7.6 V, so the motor sees about 7.1 V, inside its 10 V rating: no PWM cap. With the 12 V upgrade (section 3.9) the motor sees about 10 V; cap PWM at about 95 %.
 - **Filtering**: `VREF_F` = +5 V through 100 ohm, 10 uF + 0.1 uF to AGND; MCP3008 `VREF` and `VDD` from it; AGND joins GND at one point near U11.
 - **Motor supply** `VM`: see section 3.9. 470 uF bulk near A1, 0.1 uF at A1 `VM`, PTC fuse and TVS at the supply entry.
@@ -301,7 +301,7 @@ board GND (bridge "-" output) ---+----------------------------------------------
 
 | Item | Spec |
 |---|---|
-| Tap point | `VM` comes from the **bridge "+" output** (`VRECT`, the 7805 input node at C1), not from the jack. Board GND is the bridge "-" output, one diode drop above the adapter's negative pin, so tapping after the bridge keeps a single ground for the TB6612's logic inputs and still accepts either adapter polarity. **SW1 sits before the bridge** (J1 -> SW1 -> D1-D4, per the class board netlist), so it switches the motors too and now carries motor current: `VERIFY:` its rating (>= 2 A) or replace it with a toggle switch rated >= 3 A |
+| Tap point | `VM` comes from the **bridge "+" output** (`VRECT`, the 7805 input node at C1), not from the jack. Board GND is the bridge "-" output, one diode drop above the adapter's negative pin, so tapping after the bridge keeps a single ground for the TB6612's logic inputs and still accepts either adapter polarity. **SW1 sits before the bridge** (J1 -> SW1 -> D1-D4, per the class board netlist), so it switches the motors too and now carries motor current: SW1 is rated 3 A / 250 VAC (checked 2026-11-21), which covers the >= 2 A need at 9 V DC; the AC rating is a conservative figure for low-voltage DC. `VERIFY:` that it stays cool in the 30-minute run |
 | `VM` voltage | About 9 - 1.4 = **7.6 V**; the motor sees about 7.1 V after the TB6612 (about 0.5 V drop). Inside the motor's 10 V rating, so **no PWM cap** is needed; the faders move somewhat slower than at 10 V (MEASURE travel time) |
 | Bridge diodes | D1-D4 (1N4003) now carry motor current too: 1 A continuous, about 30 A surge. Two motors start at about 1.6 A (MEASURE), but only for the fraction of a second a fader moves, so the average stays well under 1 A. Firmware keeps the stall timeout and staggers motor starts. `VERIFY:` diode temperature after a 30-minute run; if they get hot, replace D1-D4 with 3 A diodes (for example 1N5404; check that the thicker leads fit the class board holes) |
 | Protection on `VM` | `JP_VM` jumper to isolate, PTC F1 (RHEF200 2 A hold or RHEF300 3 A, both on the order), TVS P6KE15A (12.8 V standoff), 470 uF bulk at A1, 0.1 uF at A1 `VM` |
@@ -573,7 +573,7 @@ See section 3.2 (complete).
 | 6 | Q2 | `M1_IN1` -> A1 `BIN1` |
 | 9 | Q3 | `M1_IN2` -> A1 `BIN2` |
 | 12, 15 | Q4, Q5 | NC (test points; were motor 2) |
-| 16 | Q6 | `MOT_STBY` -> A1 `STBY`, 10 k to GND |
+| 16 | Q6 | `MOT_STBY` -> A1 `STBY` (no external pull-down: the breakout has its own 10 k pull-up to `VCC`) |
 | 19 | Q7 | NC (test point) |
 | 10 / 20 | GND / VCC | |
 
@@ -612,13 +612,15 @@ Pins 10 / 20: GND / VCC. Each `BTN_*` net: 10 k to +5 V. `TOUCH1`: no pull-up, 1
 
 `VERIFY:` pin numbers against the TI datasheet. AHC inputs need about 3.85 V for a high at 5 V; a port pin into a CMOS input reaches close to 5 V, but check the PWM edge on the scope.
 
-### A.8 A1 TB6612FNG breakout (pin names; `VERIFY:` the breakout's labels and any on-board pull-downs)
+### A.8 A1 TB6612FNG breakout (Adafruit-style board, no pin numbers; labels checked on the board 2026-11-21)
+
+Header, left to right: `PWMA, AIN2, AIN1, STBY, BIN1, BIN2, PWMB, GND, Vcc, VM` (note AIN2 sits before AIN1). Screw terminal `Vmotor` + / - (5-13 VDC). Pads `MOT.A` (2), `GND` (2), `MOT.B` (2) along the bottom edge. Meter checks (power off): header `VM` is directly connected to `Vmotor +`; `STBY` has a 10 k pull-up to `VCC` on the board; the `xIN` and `PWMx` pins have about 45 k internal pull-downs.
 
 | Pin | Net |
 |---|---|
-| `VM` | `VM` (motor rail), 470 uF + 0.1 uF close by |
+| `VM` / `Vmotor +` (same net) | `VM` motor rail, fed to the **Vmotor + screw terminal**; leave the header `VM` pin unwired. 470 uF + 0.1 uF close by |
 | `VCC` | +5 V |
-| `GND` (all) | GND (motor return, section 3.9) |
+| `Vmotor -` and `GND` pads and pin | Motor return: heavy wire from `Vmotor -` to the bridge "-" at C1 (section 3.9); header `GND` to class board GND for the logic reference |
 | `PWMA` / `PWMB` | `PWM0_EN` / `PWM1_EN` |
 | `AIN1`, `AIN2` | `M0_IN1`, `M0_IN2` |
 | `BIN1`, `BIN2` | `M1_IN1`, `M1_IN2` |
@@ -726,3 +728,5 @@ Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5
 | 13.4 | 2026-10-24: power decided (closes `OPEN` #1). One 9 V >= 2 A adapter into the class board jack; `VM` tapped at the bridge "+" output before SW1 through `JP_VM`, PTC, TVS and 470 uF; A1 ground to the bridge "-" output. Motor sees about 7.1 V (no PWM cap). 12 V adapter is a drop-in upgrade |
 | 13.5 | 2026-10-25: KiCad schematic added (hardware/kicad/ESD_Final, ERC clean, netlist checked against design.py). Correction from the class board netlist: SW1 is before the bridge, so it carries motor current (`VERIFY:` rating or replace) |
 | 13.6 | 2026-11-21: button board expander is the kit **PCF8574A** (confirmed 2026-11-20), I2C address 0x38 + n (DIP all ON = 0x38); a non-A PCF8574 (0x20 + n) is the spare family and firmware scans both (sections 4.3, 4.4, A.16). Lab 4 hardware recorded in the README build-status table; the Lab 4 MCP3008 DOUT-to-P1.5 jumper was removed (P1.5 stays `TOUCH2`) |
+| 13.7 | 2026-11-21: SW1 (before the bridge, carries motor current) is rated 3 A / 250 VAC, so no replacement is needed (section 3.9); the Rev 13.5 `VERIFY:` is closed except for a temperature check |
+| 13.8 | 2026-11-21: A1 breakout details from the board (A.8): header order, `VM` = `Vmotor +` (feed the screw terminal), `STBY` has an on-board 10 k pull-up so the external 10 k pull-down on `MOT_STBY` is removed (A.4, section 3.5 safe state, schematic R8 deleted) |
