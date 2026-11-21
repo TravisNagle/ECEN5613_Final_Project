@@ -25,7 +25,7 @@
 | 2N2222 | Q2, the `RST` -> `RST_N` inverter for the '273 `/MR` |
 | 2N2907 | Spare |
 | 74LS374 | Fallback for the direction latch (section 2), otherwise a spare |
-| PCF8574 (DIP-16) | **Phase 3 button board.** One in the kit, enough for one button board |
+| PCF8574A (DIP-16, I2C 0x38 + n) | **Phase 3 button board.** One in the kit, enough for one button board |
 | Wire-wrap sockets left over: 20-pin x2, 16-pin x2, 14-pin x2, 8-pin x1 | 20-pin: U14 '273 and U16 '244. 16-pin: U11 MCP3008 and U9 74AHC157 (the PCF8574 needs one more 16-pin). 8-pin: U10 24C16 |
 | Pin strips (2 x 36), 14-contact socket strip | Headers on the perf boards, LCD mating strip |
 | Pushbuttons | 3 are used by the class board; 1 spare. You still need 7 for the panel and 4 per button board |

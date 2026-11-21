@@ -28,7 +28,7 @@ SHEETS = [
     ("dpad", "D-pad board", "Button buffer, fader ADC, D-pad, LCD"),
     ("fader_strip", "Fader button board", "F1/F2 and touch sensors"),
     ("panel", "Panel Mounted", "Faders, LCD, pedal jack"),
-    ("btn_daughter", "Button daughter board", "PCF8574 on the I2C bus (Phase 3)"),
+    ("btn_daughter", "Button daughter board", "PCF8574A on the I2C bus (Phase 3)"),
 ]
 BOARD = {k: b for k, b, _ in SHEETS}
 
@@ -69,7 +69,7 @@ NOTES = {
     ],
     "btn_daughter": [
         "Phase 3 daughter board on the RJ45 I2C bus (J101 bus in, J102 bus out, wired in parallel).",
-        "SW101 positions 1-3 set A0-A2 (closed = 0): I2C address 0x20 + n.  Positions 4-8 unused.",
+        "SW101 positions 1-3 set A0-A2 (closed = 0): I2C address 0x38 + n (PCF8574A).  Positions 4-8 unused.",
         "Powered from BUS_5V (class board +5V through JP3 / JP_BUS).",
     ],
 }
@@ -358,10 +358,10 @@ part("J13", "Connector_Audio:AudioJack3", "PEDAL 1/4in TRS", "panel",
 RJ = {"1": "SCL", "2": "GND", "3": "SDA", "4": "BUS_5V", "5": "GND", "6": "GND", "7": "BUS_INT_N", "8": "GND"}
 part("J101", "Connector:RJ45", "BUS IN", "btn_daughter", RJ, phase="P3", note="from class board J11")
 part("J102", "Connector:RJ45", "BUS OUT", "btn_daughter", RJ, phase="P3", note="to the next daughter board")
-part("U101", "Interface_Expansion:PCF8574P", "PCF8574 (kit)", "btn_daughter",
+part("U101", "Interface_Expansion:PCF8574P", "PCF8574A (kit)", "btn_daughter",
      {"1": "DB_A0", "2": "DB_A1", "3": "DB_A2", "4": "DB_SW1", "5": "DB_SW2", "6": "DB_SW3", "7": "DB_SW4",
       "8": "GND", "9": "DB_LED1_N", "10": "DB_LED2_N", "11": "DB_LED3_N", "12": "DB_LED4_N",
-      "13": "BUS_INT_N", "14": "SCL", "15": "SDA", "16": "BUS_5V"}, phase="P3", note="I2C 0x20 + n")
+      "13": "BUS_INT_N", "14": "SCL", "15": "SDA", "16": "BUS_5V"}, phase="P3", note="I2C 0x38 + n")
 bypass("C101", "btn_daughter", "P3", vcc="BUS_5V")
 CP("C102", "10uF", "BUS_5V", "GND", "btn_daughter", "P3", note="at bus in")
 part("SW101", "Switch:SW_DIP_x08", "ADDR (8-pos DIP)", "btn_daughter",

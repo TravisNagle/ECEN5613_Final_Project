@@ -199,7 +199,7 @@
 		(stroke (width 0.1524) (type solid))
 		(fill (color 0 0 0 0.0000))
 		(uuid "91723df5-1735-5477-9d76-18dbaad2cf1c")
-		(property "Sheetname" "Button daughter board: PCF8574 on the I2C bus (Phase 3)"
+		(property "Sheetname" "Button daughter board: PCF8574A on the I2C bus (Phase 3)"
 			(at 20.32 136.46 0)
 			(show_name no)
 			(do_not_autoplace no)

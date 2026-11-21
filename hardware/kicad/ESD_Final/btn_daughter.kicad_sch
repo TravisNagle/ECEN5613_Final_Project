@@ -5,7 +5,7 @@
 	(uuid "94e7e44f-a683-5baa-adcf-716634f3f40f")
 	(paper "A3")
 	(title_block
-		(title "Button daughter board: PCF8574 on the I2C bus (Phase 3)")
+		(title "Button daughter board: PCF8574A on the I2C bus (Phase 3)")
 		(date "2026-10-25")
 		(rev "13.4")
 		(company "ECEN 5613 Final Project: Reaper MIDI control surface")
@@ -1183,7 +1183,7 @@
 		(effects (font (size 2 2) (bold yes)) (justify left bottom))
 		(uuid "a6627555-6906-5c50-af6e-52aba27da1e6")
 	)
-	(text "SW101 positions 1-3 set A0-A2 (closed = 0): I2C address 0x20 + n.  Positions 4-8 unused."
+	(text "SW101 positions 1-3 set A0-A2 (closed = 0): I2C address 0x38 + n (PCF8574A).  Positions 4-8 unused."
 		(exclude_from_sim no)
 		(at 20.32 19.05 0)
 		(effects (font (size 2 2)) (justify left bottom))
@@ -2020,7 +2020,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)) (justify left))
 		)
-		(property "Value" "PCF8574 (kit)"
+		(property "Value" "PCF8574A (kit)"
 			(at 116.84 38.021 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2067,7 +2067,7 @@
 			(do_not_autoplace no)
 			(effects (font (size 1.27 1.27)))
 		)
-		(property "Note" "I2C 0x20 + n"
+		(property "Note" "I2C 0x38 + n"
 			(at 127 71.12 0)
 			(hide yes)
 			(show_name no)

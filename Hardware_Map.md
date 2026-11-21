@@ -5,8 +5,8 @@
 | File name | `Hardware_Map.md` |
 | Course | ECEN 5613 Embedded System Design, Fall 2026, Final Project |
 | Team | Nathan Cohen (analog and control), Travis Nagle (MIDI and interface) |
-| Document revision | **Rev 13.5, 2026-10-25: KiCad schematic added; SW1 correction (section 3.9).** Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
-| Status | **Concept, nothing built.** `VERIFY:` = datasheet check needed before it is trusted. `(MEASURE)` = bench value to fill in. `OPEN` = decision not yet made, see section 9 |
+| Document revision | **Rev 13.6, 2026-11-20: button board expander is a PCF8574A, address 0x38 + n (sections 4.3, 4.4).** Rev 13.5, 2026-10-25: KiCad schematic added; SW1 correction (section 3.9).** Rev 13.4, 2026-10-24: power is one 9 V >= 2 A adapter for logic and motors (section 3.9).** Rev 13.3, 2026-10-24: touch sensors are bare AT42QT1010 chips on SOT-23-6 adapters (section 3.5).** Rev 13.2, 2026-10-24: two-level build, panel vs bottom, joined by a 12-pin and a 10-pin ribbon plus a motor cable (section 3.13).** Rev 13.1, 2026-10-24: hardware fader touch sensing (AT42QT1010 per fader, section 3.5). Rev 13, 2026-10-24: the class dev board is the master board; all new circuits are hand-built (perf board / wire-wrap); no custom PCB. Two motor faders on one TB6612 driver.** Folds in the 2026-10-24 perf-board decisions (KB2040 USB-MIDI, TB6612, 74AHC157, kit 24C16, RJ45 bus). Supersedes Rev 1-12 (history in Appendix B; the Rev 12 PCB draft is in the git history at commit `735803c`) |
+| Status | **Build in progress (2026-11-21): panel built, class-board Lab 4 circuits done, motor drivers not wired; see the README build-status table.** `VERIFY:` = datasheet check needed before it is trusted. `(MEASURE)` = bench value to fill in. `OPEN` = decision not yet made, see section 9 |
 | Builds on | [class BOM](reference/class_board/kicad_schematic/ECEN5613_Dev_Board_BOM.csv), [Lab 3 memory map](reference/class_board/memory_map_and_xram.md), [lab3.pld](reference/class_board/spld/lab3.pld), PDR [F26_PDR_TravisNagle_NathanCohen.pptx](docs/F26_PDR_TravisNagle_NathanCohen.pptx), spec [f26finalproject_8-24-2026.pdf](docs/f26finalproject_8-24-2026.pdf), fader [datasheet](reference/motor_slider_datasheet.pdf), parts and order record [Perfboard_Order_Notes](hardware/Perfboard_Order_Notes.md) |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed/modified by the students. The course requires AI use to be fully documented in the final report. |
 
@@ -69,7 +69,7 @@ The **class board** keeps the AT89C51RC2 at 11.0592 MHz, its 74LS373 latch and A
                                                           v  RJ45 patch cables, any order
         +--- POT BOARD (perf, DIP addr n) ---+   +--- BUTTON BOARD (perf, DIP addr n) ---+
         | RJ45 in -> RJ45 out in parallel    |-->| RJ45 in -> RJ45 out in parallel       |--> ...
-        | I2C ADC (part OPEN #3), 8 pots     |   | PCF8574 @ 0x20+n, 4 buttons + 4 LEDs  |
+        | I2C ADC (part OPEN #3), 8 pots     |   | PCF8574A @ 0x38+n, 4 buttons + 4 LEDs |
         +------------------------------------+   +---------------------------------------+
 ```
 
@@ -432,20 +432,20 @@ Notes:
 
 | Ref | Part | Function |
 |---|---|---|
-| U1 | PCF8574N (kit, DIP-16) | I2C expander, address 0x20 + n. P0-P3 = SW1-SW4 to GND with 10 k pull-ups; P4-P7 = LED1-LED4, active low, 330 ohm to +5 V; `/INT` (pin 13) -> `BUS_INT_N` |
+| U1 | PCF8574AN (kit, DIP-16; the A version, confirmed 2026-11-20) | I2C expander, address 0x38 + n (DIP all ON = 0x38). P0-P3 = SW1-SW4 to GND with 10 k pull-ups; P4-P7 = LED1-LED4, active low, 330 ohm to +5 V; `/INT` (pin 13) -> `BUS_INT_N` |
 | SW1-SW4 | 4 x 6 mm tactile | Buttons |
 | LED1-LED4 | 4 x LED | Indicators |
 
-The kit has one PCF8574, enough for one button board.
+The kit has one PCF8574A, enough for one button board. A non-A PCF8574 is pin-compatible and answers at 0x20 + n instead; firmware should scan both ranges.
 
 ### 4.4 I2C address map
 
 | Family | Chip | 7-bit address | Where |
 |---|---|---|---|
-| Button board | PCF8574 | 0x20 + n, n = 0-7 | daughter |
+| Button board | PCF8574A | 0x38 + n, n = 0-7 | daughter |
 | Pot board | ADC per `OPEN` #3 | 0x48 + n | daughter |
 | Preset EEPROM | 24C16 | 0x50-0x57 (all 8) | master side |
-| Reserved | PCF8574A | 0x38-0x3F | spare |
+| Reserved | PCF8574 (non-A) | 0x20-0x27 | spare (a second button board built with a non-A chip) |
 
 Same-type boards must use different DIP settings; the master cannot detect a duplicate. Do not put a PCF8574 LCD backpack (0x27) on this bus.
 
@@ -699,7 +699,7 @@ Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5
 
 | Board | Chip | Pin connections |
 |---|---|---|
-| Button | PCF8574N (DIP-16): 1, 2, 3 = A0, A1, A2 from the DIP switch; 4, 5, 6, 7 = P0-P3 (buttons); 9, 10, 11, 12 = P4-P7 (LEDs); 13 = /INT; 14 = SCL; 15 = SDA; 8 = VSS; 16 = VDD | `/INT` -> `BUS_INT_N` |
+| Button | PCF8574AN (DIP-16): 1, 2, 3 = A0, A1, A2 from the DIP switch; 4, 5, 6, 7 = P0-P3 (buttons); 9, 10, 11, 12 = P4-P7 (LEDs); 13 = /INT; 14 = SCL; 15 = SDA; 8 = VSS; 16 = VDD | `/INT` -> `BUS_INT_N` |
 | Pot | per `OPEN` #3 | 8 (or 4) wipers via RC; reference = `VREF_P`; address pins from the DIP switch; `SDA`, `SCL` |
 
 ---
@@ -725,3 +725,4 @@ Pins per section 3.10: 1 `SCL`, 3 `SDA`, 4 +5 V via `JP_BUS`, 7 `BUS_INT_N`, 2/5
 | 13.3 | 2026-10-24: touch sensors are bare AT42QT1010-TSHR chips on SOT-23-6 adapters (the SparkFun breakout has its own touch pad). Datasheet pinout and circuit in section 3.5 and A.15: `SYNC/MODE` to GND (low-power mode keeps the about 60 s hold limit), no pull-up on `TOUCH1`, 10 nF HeartBeat filter on each `OUT`, RC-filtered `VDD` |
 | 13.4 | 2026-10-24: power decided (closes `OPEN` #1). One 9 V >= 2 A adapter into the class board jack; `VM` tapped at the bridge "+" output before SW1 through `JP_VM`, PTC, TVS and 470 uF; A1 ground to the bridge "-" output. Motor sees about 7.1 V (no PWM cap). 12 V adapter is a drop-in upgrade |
 | 13.5 | 2026-10-25: KiCad schematic added (hardware/kicad/ESD_Final, ERC clean, netlist checked against design.py). Correction from the class board netlist: SW1 is before the bridge, so it carries motor current (`VERIFY:` rating or replace) |
+| 13.6 | 2026-11-21: button board expander is the kit **PCF8574A** (confirmed 2026-11-20), I2C address 0x38 + n (DIP all ON = 0x38); a non-A PCF8574 (0x20 + n) is the spare family and firmware scans both (sections 4.3, 4.4, A.16). Lab 4 hardware recorded in the README build-status table; the Lab 4 MCP3008 DOUT-to-P1.5 jumper was removed (P1.5 stays `TOUCH2`) |

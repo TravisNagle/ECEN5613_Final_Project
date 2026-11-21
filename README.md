@@ -5,7 +5,29 @@ Travis Nagle & Nathan Cohen
 
 An 8051-based MIDI control surface for Reaper. Two motorized faders stay in sync with the DAW, a 16x4 LCD and panel buttons edit presets, and plug-in I2C daughter boards add pots and buttons.
 
-> **Status (2026-10-24):** design phase, nothing built yet. The master board is the **existing class dev board**, and every new circuit is **hand-built on perf boards** (no custom PCB). The authoritative hardware spec is [Hardware_Map.md](Hardware_Map.md) **Rev 13**; open decisions are in its section 9. The PDR (10/19) described a foot controller with one fader. The changes since then are in Hardware_Map Appendix B.
+> **Status (2026-11-21):** hardware build in progress. The acrylic panel (LCD, D-pad board, fader strip, both motor faders, J20/J21 ribbon cables) is built, and the Lab 4 circuits on the class board are done and signed off. The motor drivers are **not wired**, so the fader motors are disconnected and only the fader pots are connected. The master board is the **existing class dev board**, and every new circuit is **hand-built on perf boards** (no custom PCB). The authoritative hardware spec is [Hardware_Map.md](Hardware_Map.md) **Rev 13.6**; open decisions are in its section 9. The PDR (10/19) described a foot controller with one fader. The changes since then are in Hardware_Map Appendix B.
+
+### Hardware build status (2026-11-21)
+
+Source: the Lab 4 submission and Nathan's 11/21 update. `?` = not stated; confirm on the bench. Built does not mean bring-up tested.
+
+| Item | Phase | Status |
+|---|---|---|
+| U4 NVSRAM removed, 1 KB on-chip XRAM (`AUXR = 0x0C`) | P1 | Done |
+| U7 ATF16V8B programmed with `final.pld` | P1 | Done, `.jed` kept (pin 12 now wired to U16; pin 15 open until U14 is wired) |
+| Acrylic panel: LCD1, D-pad board, fader strip, FDR1/FDR2, J20/J21 (and J23) ribbon cables | P1/P2 | Built. Fader pots connected; fader motors disconnected |
+| LCD1 memory-mapped on `AD0`-`AD7`, `LCD_E` from U7.14 (16x4) | P1 | Working (Lab 4, timing measured) |
+| U10 24C16 + 5.1 k pull-ups + C23 | P2 | Done (24LC16B family; scan ACKs 0x50-0x57) |
+| U11 MCP3008 | P1 | Built; P1.5 (SPI MISO) jumper removed. Bit-banged read on P3.3 |
+| PCF8574A (0x38) + 4 buttons + 4 LEDs, `/INT` to P3.2 | P3 | Done (Lab 4); spec now uses the A part |
+| U9, U14, Q2, A1 TB6612, motor supply (`VM` tap, PTC, TVS, 470 uF) | P1 | **Not wired** (motor drivers) |
+| A4/A5 AT42QT1010 touch sensors | P1/P2 | Wired |
+| U16 74HCT244 (reads the 5 D-pad buttons, `BTN_F1`, `BTN_F2` and `TOUCH1` at 0xF800) + the 8 pull-ups | P1 | Built (D-pad board); `BTN_OE_N` from U7.12 wired. Not yet read in firmware |
+| A2 KB2040, A3 level shifter | P1 | **Not built** |
+| `JP_RX`, J7 | P1 | **Not built** |
+| J11 RJ45 bus + one button daughter board (PCF8574A, 4 buttons, 4 LEDs; single bus-out to single bus-in) | P2/P3 | Wired. Pot board not built |
+
+**Next:** wire U9, U14, Q2, A1 and the motor supply (Hardware_Map 3.5, 3.9, A.4-A.8), then the motor fader bring-up tests (section 7, P1). Lab 4 test parts to clear when the real boards go in: the 4 buttons and 4 LEDs on the PCF8574A (they belong on the button daughter board) and the 2 test pots on MCP3008 CH0/CH1.
 
 ## Documents
 
