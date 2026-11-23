@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Revision | 2, 2026-11-22: mover brakes ahead of the target (rev 1 hunted end to end). 1: first draft |
+| Revision | 3, 2026-11-22: page 3 (MIDI send/receive test). 2: mover brakes ahead of the target. 1: first draft |
 | Status | **DRAFTED.** It builds with SDCC 4.6.0 (10.6 KB code, 387 bytes XRAM, no warnings). It has not been run on hardware |
 | Hardware | [Hardware_Map.md](../../Hardware_Map.md) Rev 13.8 |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed by the student. The `lcd`, `i2c`, `eeprom`, `mcp3008`, `pcf8574`, `delay` and `config.h` files are copied unchanged from my Lab 4 code |
@@ -20,7 +20,7 @@ This writes `build/bench_test.hex`. **FLIP has no macOS build**, and I found no 
 
 ## Pages
 
-Hold D-pad **CENTER** for about 1 s to go to the next page (MAIN, BUS, CAL, then MAIN again). A short press of CENTER only shows `C` on the main page.
+Hold D-pad **CENTER** for about 1 s to go to the next page (MAIN, BUS, CAL, MIDI, then MAIN again). A short press of CENTER only shows `C` on the main page.
 
 ### Page 0, MAIN
 
@@ -44,6 +44,23 @@ D:UDLRC F:12 S:4        row 3: D-pad, fader buttons, class board SW4 (letter = p
 ### Page 2, CAL
 
 F1 or F2 runs that fader to both ends (about 1.2 s each way at 55 % PWM), records the pot readings at the ends and shows them as `L` and `H`, then parks the fader at 50 %. Those ends are used for the 25/50/75 % targets until reset. Write them into the `FADERn_ADC_LO_DEFAULT` and `FADERn_ADC_HI_DEFAULT` lines in [src/bench.h](src/bench.h) to keep them. The letter at the end of each row is the polarity found: `F` = driving FWD raises the reading, `R` = REV raises it, `X` = no movement, `?` = not tested yet.
+
+### Page 3, MIDI
+
+```
+TX:0006 RX:0003         bytes sent and received since reset (hex)
+F1=note F2=sweep
+RX:90 3C 64             the last three bytes received
+Fader1 bend:1A2B        the last pitch bend value sent (14-bit)
+```
+
+Tests the path 8051 UART, level shifter (A3), KB2040, USB and back.
+- **F1** sends Note On, middle C, channel 1, then Note Off about 120 ms later.
+- **F2** sweeps a pitch bend from 0 to 16383 in nine steps.
+- **Moving fader 1** streams it as a channel 1 pitch bend, as the MVP firmware does.
+- **RX** counts bytes that the Mac sends to the KB2040 and that reach the 8051 through `JP_RX` (set to 1-2). Send a note from any MIDI app and watch `RX` count up and the last three bytes change.
+- Watch the other direction in MIDI Monitor or Reaper's MIDI input. The UART runs at 31,418 baud, 0.54 % above MIDI's 31,250, which MIDI tolerates.
+- The receiver has a one-byte buffer, polled once per tick, so a fast burst of bytes can lose some. That is fine for a connectivity test.
 
 The status LED on the class board (P1.1) blinks at about 1 Hz while the program runs. A fast blink means the LCD is not answering.
 
@@ -82,6 +99,7 @@ All the numbers are in [src/bench.h](src/bench.h): PWM range (`MOVE_MIN_PWM`, `M
 |---|---|
 | `src/main.c` | Pages, inputs, fader moves, calibration |
 | `src/motor.c` | U14 latch, PCA PWM (10.8 kHz), polarity probe |
+| `src/midi_tx.c` | Polled UART MIDI output and input (page 3) |
 | `src/screen.c` | 16x4 text buffer over the Lab 4 LCD driver, bar graph |
 | `src/bench.h` | Addresses, bit masks, tuning |
 | `src/config.h`, `lcd.*`, `i2c.*`, `eeprom.*`, `mcp3008.*`, `pcf8574.*`, `delay.*` | Lab 4 code, unchanged |

@@ -22,6 +22,14 @@
  *                 F1 / F2 drive that fader to both ends, record the pot readings
  *                 at the ends and use them for the 25/50/75 % targets until reset
  *
+ *               Page 3 (MIDI)
+ *                 UART at 31,250 baud (31,418 actual) to the KB2040 through the level
+ *                 shifter. Shows bytes sent (TX) and received (RX) and the last three
+ *                 received bytes. F1 sends a note (middle C, channel 1) and releases it
+ *                 about 120 ms later, F2 sweeps a pitch bend, and moving fader 1 streams
+ *                 it as a channel 1 pitch bend (as the MVP does). Bytes the Mac sends to
+ *                 the KB2040 show up as RX.
+ *
  *               Always: status LED (P1.1) blinks about 1 Hz; fast blink = LCD
  *               not answering.
  *
@@ -47,6 +55,7 @@
 #include "pcf8574.h"        /* its /INT0 ISR prototype must be visible here for the vector table */
 #include "bench.h"
 #include "motor.h"
+#include "midi_tx.h"
 #include "screen.h"
 
 #define LED_N           P1_1        /* class board status LED, lit when 0 */
@@ -56,7 +65,8 @@
 #define PAGE_MAIN       0U
 #define PAGE_BUS        1U
 #define PAGE_CAL        2U
-#define PAGE_COUNT      3U
+#define PAGE_MIDI       3U
+#define PAGE_COUNT      4U
 
 #define EE_TEST_ADDR    0x07FFU     /* last EEPROM byte; saved and restored by the test */
 #define EE_MISMATCH     (-100)
@@ -108,6 +118,12 @@ static int      s_ee_result;
 static uint8_t  s_scan_found[4];
 static uint8_t  s_scan_count;
 static char     s_cal_msg[17];
+
+static uint8_t  s_midi_last[3];     /* last three received bytes, newest last */
+static uint8_t  s_note_off_ticks;   /* ticks until the test note is released, 0 = none */
+static uint16_t s_pb_sent_pos;      /* fader 1 reading when the last pitch bend was sent */
+static uint16_t s_pb_value;         /* last pitch bend value sent (14-bit) */
+static uint8_t  s_pb_valid;
 
 static uint8_t  s_heartbeat;
 
@@ -596,6 +612,84 @@ static void main_draw(void)
     screen_putc(3U, 15U, SW4_N ? '-' : '4');
 }
 
+/* ---- page 3: MIDI ----------------------------------------------------------- */
+
+static uint16_t pos_to_bend(uint8_t m)
+{
+    uint16_t p = s_pos[m];
+
+    if (p <= s_lo[m]) { return 0U; }
+    if (p >= s_hi[m]) { return 16383U; }
+    return (uint16_t)(((uint32_t)(p - s_lo[m]) * 16383UL) / (uint32_t)(s_hi[m] - s_lo[m]));
+}
+
+/* every tick, on every page: count received bytes, release the test note, and on
+   the MIDI page stream fader 1 as a pitch bend on channel 1 (as the MVP does) */
+static void midi_service(void)
+{
+    uint8_t b;
+    uint16_t diff;
+
+    while (midi_get_byte(&b)) {
+        s_midi_last[0] = s_midi_last[1];
+        s_midi_last[1] = s_midi_last[2];
+        s_midi_last[2] = b;
+    }
+    if (s_note_off_ticks != 0U) {
+        if (--s_note_off_ticks == 0U) {
+            midi_send_note(false, 60U, 0U);
+        }
+    }
+    if (s_page == PAGE_MIDI) {
+        diff = (s_pos[0] > s_pb_sent_pos) ? (uint16_t)(s_pos[0] - s_pb_sent_pos)
+                                          : (uint16_t)(s_pb_sent_pos - s_pos[0]);
+        if ((s_pb_valid == 0U) || (diff >= 4U)) {
+            s_pb_value = pos_to_bend(0U);
+            midi_send_pitch_bend(0U, s_pb_value);
+            s_pb_sent_pos = s_pos[0];
+            s_pb_valid = 1U;
+        }
+    }
+}
+
+/* F2: sweep a pitch bend over its range, slowly enough to watch in a monitor */
+static void midi_sweep(void)
+{
+    uint8_t i;
+
+    for (i = 0U; i <= 8U; i++) {
+        s_pb_value = (i == 8U) ? 16383U : (uint16_t)(i * 2048U);
+        midi_send_pitch_bend(0U, s_pb_value);
+        delay_ms(30U);
+    }
+}
+
+static void put_hex4(uint8_t row, uint8_t col, uint16_t v)
+{
+    screen_put_hex2(row, col, (uint8_t)(v >> 8));
+    screen_put_hex2(row, (uint8_t)(col + 2U), (uint8_t)v);
+}
+
+static void midi_draw(void)
+{
+    screen_puts(0U, 0U, "TX:");
+    put_hex4(0U, 3U, midi_tx_count());
+    screen_puts(0U, 8U, "RX:");
+    put_hex4(0U, 11U, midi_rx_count());
+
+    screen_puts(1U, 0U, "F1=note F2=sweep");
+
+    screen_puts(2U, 0U, "RX:");
+    screen_put_hex2(2U, 3U, s_midi_last[0]);
+    screen_putc(2U, 5U, ' ');
+    screen_put_hex2(2U, 6U, s_midi_last[1]);
+    screen_putc(2U, 8U, ' ');
+    screen_put_hex2(2U, 9U, s_midi_last[2]);
+
+    screen_puts(3U, 0U, "Fader1 bend:");
+    put_hex4(3U, 12U, s_pb_value);
+}
+
 /* ---- pages ------------------------------------------------------------------ */
 
 static void page_enter(uint8_t page)
@@ -617,9 +711,16 @@ static void page_poll_buttons(void)
     case PAGE_BUS:
         if (pressed_edge(BTN_F1)) { bus_run_tests(); }
         break;
-    default:    /* PAGE_CAL */
+    case PAGE_CAL:
         if (pressed_edge(BTN_F1)) { calibrate(0U); }
         if (pressed_edge(BTN_F2)) { calibrate(1U); }
+        break;
+    default:    /* PAGE_MIDI */
+        if (pressed_edge(BTN_F1)) {
+            midi_send_note(true, 60U, 100U);
+            s_note_off_ticks = 10U;             /* released about 120 ms later */
+        }
+        if (pressed_edge(BTN_F2)) { midi_sweep(); }
         break;
     }
 }
@@ -678,6 +779,7 @@ void main(void)
     eereset();
     lcdinit();
     (void)pcf_init();
+    midi_init();
 
     screen_load_bar_glyphs();
     page_enter(PAGE_MAIN);
@@ -687,6 +789,7 @@ void main(void)
 
         inputs_poll();
         pcf_poll();
+        midi_service();
         page_poll_hold();
         page_poll_buttons();
         for (m = 0U; m < FADER_COUNT; m++) {
@@ -696,7 +799,8 @@ void main(void)
         switch (s_page) {
         case PAGE_MAIN: main_draw(); break;
         case PAGE_BUS:  bus_draw();  break;
-        default:        cal_draw();  break;
+        case PAGE_CAL:  cal_draw();  break;
+        default:        midi_draw(); break;
         }
         screen_flush();
         heartbeat();

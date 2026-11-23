@@ -19,7 +19,7 @@ LDFLAGS := -mmcs51 --model-large --code-loc 0x0000 --code-size 0x8000 \
 
 # main.c must come first: SDCC takes the entry module and vector table from it
 SRCS    := src/main.c src/motor.c src/screen.c src/delay.c src/lcd.c src/i2c.c \
-           src/eeprom.c src/mcp3008.c src/pcf8574.c
+           src/eeprom.c src/mcp3008.c src/pcf8574.c src/midi_tx.c
 OBJS    := $(patsubst src/%.c,build/%.rel,$(SRCS))
 HDRS    := $(wildcard src/*.h)
 
