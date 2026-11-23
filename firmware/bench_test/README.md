@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | Revision | 3, 2026-11-22: page 3 (MIDI send/receive test). 2: mover brakes ahead of the target. 1: first draft |
-| Status | **DRAFTED.** It builds with SDCC 4.6.0 (10.6 KB code, 387 bytes XRAM, no warnings). It has not been run on hardware |
+| Status | **Run on hardware** (2026-11-22 and 2026-11-23): buttons, touch, LCD, fader moves, calibration and the MIDI link in both directions work. It builds with SDCC 4.6.0, no warnings |
 | Hardware | [Hardware_Map.md](../../Hardware_Map.md) Rev 13.8 |
 | AI use | Drafted with AI assistance (Anthropic Claude); reviewed by the student. The `lcd`, `i2c`, `eeprom`, `mcp3008`, `pcf8574`, `delay` and `config.h` files are copied unchanged from my Lab 4 code |
 
-A stand-alone test of the panel, the button board and the motor drivers. There is no MIDI and no UART, and the motors stay off until you press F1 or F2.
+A stand-alone test of the panel, the button board and the motor drivers. Page 3 uses the UART for a MIDI send/receive test; the other pages do not. The motors stay off until you press F1 or F2.
 
 ## Build and flash
 
